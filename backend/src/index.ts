@@ -7,7 +7,8 @@ import connectToMongoDB from "./db/connectToMongoDB";
 import authRoutes from "./routes/auth.routes";
 import categoryRoutes from "./routes/category.routes";
 import userRoutes from "./routes/user.routes";
-import artwork from "./routes/artwork.routes";
+import artworkRoutes from "./routes/artwork.routes";
+import paymentRoutes from "./routes/payment.routes";
 
 dotenv.config();
 
@@ -21,7 +22,8 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/user", userRoutes);
-app.use("/api/artwork", artwork);
+app.use("/api/artwork", artworkRoutes);
+app.use("/api/payment", paymentRoutes);
 
 app.listen(port, () => {
   connectToMongoDB();
