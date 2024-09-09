@@ -3,6 +3,7 @@ import {
   createArtwork,
   deleteArtwork,
   getAllArtworks,
+  getArtworksByCategory,
   updateArtwork,
 } from "../controllers/artwork.controller";
 
@@ -12,5 +13,5 @@ router.post("/", createArtwork);
 router.get("/", getAllArtworks);
 router.put("/:id", updateArtwork);
 router.delete("/:id", deleteArtwork);
-
+router.get("/category", getArtworksByCategory);
 export default router;

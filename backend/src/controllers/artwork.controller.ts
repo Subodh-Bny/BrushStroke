@@ -73,6 +73,34 @@ export const getAllArtworks = async (req: Request, res: Response) => {
   }
 };
 
+export const getArtworksByCategory = async (req: Request, res: Response) => {
+  try {
+    const { categoryId } = req.query;
+
+    if (!categoryId || !mongoose.Types.ObjectId.isValid(categoryId as string)) {
+      return res.status(400).json({ error: "Invalid or missing category id" });
+    }
+
+    const artworks = await Artwork.find({ category: categoryId }).populate(
+      "artist category"
+    );
+
+    if (!artworks) {
+      return res.status(404).json({ error: "No artworks found" });
+    }
+
+    return res.status(200).json({
+      message: "Artworks fetched successfully",
+      artworks,
+    });
+  } catch (error: any) {
+    console.log("Error in getArtworksByCategory controller", error.message);
+    return res
+      .status(500)
+      .json({ error: "Internal server error", message: error.message });
+  }
+};
+
 export const updateArtwork = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
