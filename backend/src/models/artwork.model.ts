@@ -20,7 +20,7 @@ const artworkSchema = new Schema<IArtwork>({
     ref: "Category",
     required: true,
   },
-  artist: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Linked to a seller/artist
+  artist: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

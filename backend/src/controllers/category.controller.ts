@@ -1,7 +1,6 @@
 import { Response, Request } from "express";
 import mongoose from "mongoose";
 import Category from "../models/category.model";
-import { error } from "console";
 
 export const createCategory = async (req: Request, res: Response) => {
   try {

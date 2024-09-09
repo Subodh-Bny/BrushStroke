@@ -46,7 +46,10 @@ export const signup = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error("Error in signup controller:", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({
+      error: "Internal server error",
+      message: error.message,
+    });
   }
 };
 
@@ -77,7 +80,9 @@ export const login = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.log("Error in login controller", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error", message: error.message });
   }
 };
 
@@ -87,6 +92,8 @@ export const logout = (req: Request, res: Response) => {
     return res.status(200).json("Logged out successfully");
   } catch (error: any) {
     console.log("Error in logout controller", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res
+      .status(500)
+      .json({ error: "Internal server error", message: error.message });
   }
 };
