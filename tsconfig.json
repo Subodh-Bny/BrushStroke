@@ -24,6 +24,6 @@
       "*": ["node_modules/*", "backend/src/types/*"]
     }
   },
-  "include": ["backend/src/**/*"],
+  "include": ["backend/src/**/*", "backend/src/types/**.d.ts"],
   "exclude": [".templates"]
 }
