@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { initiatePayment, verifyPayment } from "../khalti/payment.controller";
+import {
+  initiatePayment,
+  verifyPayment,
+} from "../controllers/payment.controller";
 
 const router = Router();
 
