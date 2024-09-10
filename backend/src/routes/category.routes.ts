@@ -5,12 +5,13 @@ import {
   getAllCategories,
   updateCategory,
 } from "../controllers/category.controller";
+import protectRoute from "../middleware/protectRoute";
 
 const router = Router();
 
 router.get("/", getAllCategories);
-router.post("/create", createCategory);
-router.put("/:id", updateCategory);
-router.delete("/:id", deleteCategory);
+router.post("/create", protectRoute, createCategory);
+router.put("/:id", protectRoute, updateCategory);
+router.delete("/:id", protectRoute, deleteCategory);
 
 export default router;

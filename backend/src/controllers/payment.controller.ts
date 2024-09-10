@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import axios from "axios";
+import Order from "../models/order.model";
 
 export const initiatePayment = async (req: Request, res: Response) => {
   try {
@@ -37,10 +38,12 @@ export const initiatePayment = async (req: Request, res: Response) => {
   }
 };
 
-export const verifyPayment = async (req: Request, res: Response) => {
+export const verifyPayment = async (
+  token: string,
+  amount: number,
+  purchase_order_id: string
+) => {
   try {
-    const { token, amount, purchase_order_id } = req.body;
-
     const response = await axios.post(
       "https://a.khalti.com/api/v2/epayment/verify/",
       {
@@ -56,9 +59,56 @@ export const verifyPayment = async (req: Request, res: Response) => {
       }
     );
 
-    res.json(response.data);
-  } catch (error) {
-    console.error("Error verifying payment:", error);
-    res.status(500).json({ error: "Failed to verify payment" });
+    if (response.status === 200 && response.data.state === "Completed") {
+      return {
+        success: true,
+        details: response.data,
+      };
+    } else {
+      return { success: false, message: "Payment verification failed" };
+    }
+  } catch (error: any) {
+    console.log("Khalti Payment Verification Error", error.message);
+    return { success: false, message: "Error verifying payment" };
+  }
+};
+
+export const verifyPaymentAndUpdateOrder = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const {
+      orderId: purchase_order_id,
+      paymentToken: token,
+      amount,
+    } = req.body;
+
+    const paymentStatus = await verifyPayment(token, amount, purchase_order_id);
+
+    if (!paymentStatus.success) {
+      return res.status(400).json({ error: paymentStatus.message });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      purchase_order_id,
+      { status: "Paid", paymentDetails: paymentStatus.details },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    return res.status(200).json({
+      message: "Payment verified, order status updated successfully",
+      order: updatedOrder,
+    });
+  } catch (error: any) {
+    console.log(
+      "Error in verifyPaymentAndUpdateOrder controller",
+      error.message
+    );
+    return res.status(500).json({ error: "Internal server error" });
   }
 };

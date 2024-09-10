@@ -1,40 +1,43 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-interface IOrder extends Document {
-  customer: mongoose.Types.ObjectId;
-  artworks: {
-    artwork: mongoose.Types.ObjectId;
-    quantity: number;
-  }[];
+export interface IOrder extends Document {
+  user: mongoose.Types.ObjectId;
+  artworks: mongoose.Types.ObjectId[];
+  status: string; // "Pending", "Shipped", "Delivered"
   totalPrice: number;
-  paymentStatus: string;
   createdAt: Date;
+  updatedAt: Date;
 }
 
-const orderSchema = new Schema<IOrder>({
-  customer: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  artworks: [
-    {
-      artwork: {
-        type: mongoose.Schema.Types.ObjectId,
+const OrderSchema: Schema = new Schema(
+  {
+    user: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    artworks: [
+      {
+        type: mongoose.Types.ObjectId,
         ref: "Artwork",
         required: true,
       },
-      quantity: { type: Number, required: true },
+    ],
+    status: {
+      type: String,
+      enum: ["Pending", "Shipped", "Delivered"],
+      default: "Pending",
     },
-  ],
-  totalPrice: { type: Number, required: true },
-  paymentStatus: {
-    type: String,
-    enum: ["PENDING", "PAID", "FAILED"],
-    default: "PENDING",
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
   },
-  createdAt: { type: Date, default: Date.now },
-});
+  {
+    timestamps: true,
+  }
+);
 
-const Order = mongoose.model<IOrder>("Order", orderSchema);
+const Order = mongoose.model<IOrder>("Order", OrderSchema);
+
 export default Order;
