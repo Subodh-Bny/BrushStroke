@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
+import User from "../models/user.model";
 import { NextFunction, Response, Request } from "express";
 
 interface JwtPayloadWithUserId extends jwt.JwtPayload {
@@ -33,7 +33,7 @@ const protectRoute = async (
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
+    //@ts-ignore
     req.user = user;
 
     next();
