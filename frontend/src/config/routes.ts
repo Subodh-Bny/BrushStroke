@@ -12,11 +12,11 @@ const routes: RouteType = {
     },
     {
       name: "About",
-      href: "/",
+      href: "/about",
     },
     {
       name: "Contact",
-      href: "/",
+      href: "/contact",
     },
   ],
 };

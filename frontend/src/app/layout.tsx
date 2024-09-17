@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Caveat, Montserrat } from "next/font/google";
 import TopNav from "@/components/layouts/TopNav";
+import Footer from "@/components/layouts/Footer";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -29,7 +30,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${montserrat.variable} ${caveat.variable} relative`}>
         <TopNav />
-        <main className=" w-full mx-auto min-h-screen">{children}</main>
+        <main className="w-full mx-auto min-h-screen">{children}</main>
+        <Footer />
       </body>
     </html>
   );
