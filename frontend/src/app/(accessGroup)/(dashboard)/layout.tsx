@@ -10,10 +10,12 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react";
+import routes from "@/config/routes";
+import { useRouter } from "next/navigation";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+  const router = useRouter();
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
@@ -39,19 +41,36 @@ const Layout = ({ children }: { children: ReactNode }) => {
         </Button>
 
         <nav className="space-y-2 p-2">
-          <Button variant="ghost" className="w-full justify-start">
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => router.push(routes.admin.dashboard)}
+          >
             <Home className="h-4 w-4" />
             {isSidebarOpen && <span className="ml-2">Dashboard</span>}
           </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <ShoppingCart className="h-4 w-4" />
+
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => router.push(routes.admin.orders)}
+          >
+            <Package className="h-4 w-4" />
             {isSidebarOpen && <span className="ml-2">Orders</span>}
           </Button>
-          <Button variant="ghost" className="w-full justify-start">
-            <Package className="h-4 w-4" />
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => router.push(routes.admin.artworks.add)}
+          >
+            <ShoppingCart className="h-4 w-4" />
             {isSidebarOpen && <span className="ml-2">Artworks</span>}
           </Button>
-          <Button variant="ghost" className="w-full justify-start">
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => router.push(routes.admin.dashboard)}
+          >
             <Users className="h-4 w-4" />
             {isSidebarOpen && <span className="ml-2">Users</span>}
           </Button>

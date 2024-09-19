@@ -82,7 +82,7 @@ export const login = async (req: Request, res: Response) => {
     const token = generateTokenAndCookie(user?._id, res);
 
     return res.status(200).json({
-      message: "User logged in successfully",
+      message: "Logged in",
       data: {
         _id: user?._id,
         username: user?.username,

@@ -2,8 +2,8 @@ import React from "react";
 
 import { Dashboard } from "@/components/Dashboard/Dashboard";
 
-const page = () => {
+const AdminDashboard = () => {
   return <Dashboard />;
 };
 
-export default page;
+export default AdminDashboard;
