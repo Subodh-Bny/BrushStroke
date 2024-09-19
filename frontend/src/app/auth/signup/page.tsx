@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSignup } from "@/services/api/authApi";
 import ClipLoader from "react-spinners/ClipLoader";
+import routes from "@/config/routes";
 
 const SignupPage = () => {
   const {
@@ -121,8 +122,8 @@ const SignupPage = () => {
         <Link href={"#"} className="hover:underline">
           Forgot password ?
         </Link>
-        <Link href={"#"} className="hover:underline">
-          Create Account
+        <Link href={routes.auth.login} className="hover:underline">
+          Login Instead
         </Link>
       </div>
     </div>

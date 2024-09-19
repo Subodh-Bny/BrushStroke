@@ -1,7 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import routes from "@/config/routes";
+import React, { useContext, useEffect, useState } from "react";
 
 import {
   DropdownMenu,
@@ -18,7 +16,7 @@ import {
   LogOut,
   LayoutDashboard,
 } from "lucide-react";
-import { Button } from "../ui/button";
+import { AuthContext } from "@/context/AuthContext";
 
 const UserNav = ({
   isScrolled,
@@ -27,7 +25,12 @@ const UserNav = ({
   isScrolled: boolean;
   pathname: string;
 }) => {
-  const [userType, setUserType] = useState("ARTIST");
+  const { logout, user } = useContext(AuthContext);
+  const [userType, setUserType] = useState("");
+  useEffect(() => {
+    user && setUserType(user?.role || "");
+  }, [user]);
+  console.log(userType);
   return (
     <nav
       className={`flex gap-2 justify-self-end${
@@ -84,7 +87,10 @@ const UserNav = ({
             <span>Help & Support</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer">
+          <DropdownMenuItem
+            className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer"
+            onClick={logout}
+          >
             <LogOut className="mr-2 h-4 w-4" />
             <span>Log out</span>
           </DropdownMenuItem>

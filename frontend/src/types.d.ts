@@ -15,7 +15,18 @@ interface SignupUser {
   password: string;
   confirmPassword: string;
 }
+interface LoginUser {
+  email: string;
+  password: string;
+}
 
+interface User {
+  email: string;
+  profilePic: string;
+  username: string;
+  _id?: string;
+  role?: string;
+}
 interface Product {
   id: number;
   title: string;

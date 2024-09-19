@@ -2,7 +2,6 @@ const endPoints = {
   //auth
   signup: "/auth/signup",
   login: "/auth/login",
-  logout: "/auth/logout",
 
   //category
   getAllCategories: "/category",

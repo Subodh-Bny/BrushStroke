@@ -76,7 +76,7 @@ export const login = async (req: Request, res: Response) => {
       user?.password || ""
     );
     if (!isPasswordCorrect) {
-      return res.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
 
     const token = generateTokenAndCookie(user?._id, res);
@@ -88,6 +88,7 @@ export const login = async (req: Request, res: Response) => {
         username: user?.username,
         email: user?.email,
         profilePic: user?.profilePic,
+        role: user?.role,
       },
       token,
     });
@@ -96,18 +97,18 @@ export const login = async (req: Request, res: Response) => {
 
     return res
       .status(500)
-      .json({ error: "Internal server error", message: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
-export const logout = (req: Request, res: Response) => {
-  try {
-    res.cookie("jwt", "", { maxAge: 0 });
-    return res.status(200).json("Logged out successfully");
-  } catch (error: any) {
-    console.log("Error in logout controller", error.message);
-    return res
-      .status(500)
-      .json({ error: "Internal server error", message: error.message });
-  }
-};
+// export const logout = (req: Request, res: Response) => {
+//   try {
+//     res.cookie("jwt", "", { maxAge: 0 });
+//     return res.status(200).json({ message: "Logged out successfully" });
+//   } catch (error: any) {
+//     console.log("Error in logout controller", error.message);
+//     return res
+//       .status(500)
+//       .json({ message: "Internal server error", error: error.message });
+//   }
+// };

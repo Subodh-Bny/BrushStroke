@@ -1,26 +1,23 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import NavLinks from "./NavLinks";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import UserNav from "./UserNav";
 import { Button } from "../ui/button";
 import routes from "@/config/routes";
+import { AuthContext } from "@/context/AuthContext";
 
 const TopNav = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn } = useContext(AuthContext);
+
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      if (scrollTop > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(scrollTop > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -47,7 +44,7 @@ const TopNav = () => {
       <header className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
         <Link
           href={routes.landing.home}
-          className={`font-caveat text-4xl select-none justify-self-start cursor-pointer ${
+          className={`font-caveat text-4xl select-none cursor-pointer ${
             pathname === "/"
               ? isScrolled
                 ? "text-black"
@@ -73,12 +70,12 @@ const TopNav = () => {
         {!isLoggedIn ? (
           <div className="flex gap-2">
             <Button
-              className={`bg-white font-bold hover:text-white  hover:bg-red-500  ${
+              className={`bg-white font-bold hover:text-white hover:bg-red-500 ${
                 pathname === "/"
                   ? isScrolled
                     ? "text-red-500 bg-transparent border border-red-500"
-                    : "text-red-500 "
-                  : "bg-transparent border border-red-500 text-red-500 "
+                    : "text-red-500"
+                  : "bg-transparent border border-red-500 text-red-500"
               }`}
               onClick={() => handleRoute(routes.auth.login)}
             >

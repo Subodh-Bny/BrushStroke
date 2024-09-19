@@ -3,6 +3,7 @@ import "./globals.css";
 import { Caveat, Montserrat } from "next/font/google";
 import { QueryProvider } from "@/context/QueryProvider";
 import { Toaster } from "react-hot-toast";
+import AllContextProvider from "@/context/AllContextProvider";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -29,10 +30,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <QueryProvider>
-        <body className={`${montserrat.variable} ${caveat.variable} relative`}>
-          <main className="w-full mx-auto min-h-screen">{children}</main>
-          <Toaster />
-        </body>
+        <AllContextProvider>
+          <body
+            className={`${montserrat.variable} ${caveat.variable} relative`}
+          >
+            <main className="w-full mx-auto min-h-screen">{children}</main>
+            <Toaster />
+          </body>
+        </AllContextProvider>
       </QueryProvider>
     </html>
   );
