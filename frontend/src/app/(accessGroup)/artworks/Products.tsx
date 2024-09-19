@@ -4,8 +4,8 @@ import React from "react";
 import Image from "next/image";
 // import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Container from "../../components/Container";
-import Header from "../../components/SectionHeading";
+import Container from "../../../components/Container";
+import Header from "../../../components/SectionHeading";
 import { Button } from "@/components/ui/button";
 
 const ProductsData: Product[] = [

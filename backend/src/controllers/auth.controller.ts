@@ -9,12 +9,16 @@ export const signup = async (req: Request, res: Response) => {
       req.body;
 
     if (password !== confirmPassword) {
-      return res.status(400).json({ error: "Passwords do not match" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Passwords do not match" });
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "Email already exists" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already exists" });
     }
 
     const salt = await bcryptjs.genSalt(10);
@@ -46,6 +50,15 @@ export const signup = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error("Error in signup controller:", error.message);
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyValue)[0];
+      const value = error.keyValue[field];
+
+      return res.status(400).json({
+        success: false,
+        message: `The ${field} is already in use. Please choose a different one.`,
+      });
+    }
     return res.status(500).json({
       error: "Internal server error",
       message: error.message,
@@ -80,6 +93,7 @@ export const login = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.log("Error in login controller", error.message);
+
     return res
       .status(500)
       .json({ error: "Internal server error", message: error.message });
