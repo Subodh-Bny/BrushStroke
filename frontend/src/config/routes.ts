@@ -4,7 +4,7 @@ const routes = {
   artworks: "/artworks",
   admin: {
     dashboard: "/admin",
-    artworks: { add: "/admin/artwork/add" },
+    artworks: { add: "/admin/artwork/add", view: "/admin/artwork/" },
     orders: "/admin/orders",
   },
 };

@@ -40,6 +40,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const userToken = Cookies.get("jwt");
+    console.log(userToken);
     if (userToken) {
       setIsLoggedIn(true);
       setToken(userToken);

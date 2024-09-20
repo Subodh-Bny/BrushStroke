@@ -12,6 +12,11 @@ export const middleware = (request: NextRequest) => {
     // console.log(token, url.pathname);
     return NextResponse.redirect(url);
   }
+  if (!token && url.pathname.startsWith("/admin")) {
+    url.pathname = routes.landing.home;
+    // console.log(token, url.pathname);
+    return NextResponse.redirect(url);
+  }
 
   return NextResponse.next();
 };

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import axiosInstance from "../axoisInstance";
+import axiosInstance from "../axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import endPoints from "../endPoints";
 import axios, { AxiosResponse, AxiosError } from "axios";
@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import routes from "@/config/routes";
+import { requestError } from "./apiError";
 
 export const useSignup = ({ reset }: { reset: () => void }) => {
   const router = useRouter();
@@ -20,18 +21,8 @@ export const useSignup = ({ reset }: { reset: () => void }) => {
         toast.success(response.data.message);
         router.push(routes.auth.login);
         reset();
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosError<ApiResponse>;
-          if (axiosError.response && axiosError.response.data) {
-            const errorMessage = axiosError.response.data.message;
-            toast.error(errorMessage);
-          } else {
-            toast.error("An unknown error occurred. Please try again.");
-          }
-        } else {
-          toast.error("An error occurred. Please try again.");
-        }
+      } catch (error: unknown) {
+        requestError(error as AxiosError<ApiResponse, unknown>);
       }
     },
   });
@@ -68,11 +59,11 @@ export const useLogin = ({
         const user: User | undefined = response.data.data;
         const token: string | undefined = response.data.token;
         if (user) {
-          Cookies.set("user", JSON.stringify(user), { sameSite: "Strict" });
+          Cookies.set("user", JSON.stringify(user), { sameSite: "Lax" });
           setUser(user);
         }
         if (token) {
-          Cookies.set("jwt", token, { sameSite: "Strict" });
+          // Cookies.set("jwt", token, { sameSite: "Lax" });
           setToken(token);
           // NextResponse.redirect(new URL(routes.landing.home));
         }
@@ -82,18 +73,7 @@ export const useLogin = ({
         reset();
         onSuccess();
       } catch (error) {
-        if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosError<ApiResponse>;
-          if (axiosError.response && axiosError.response.data) {
-            const errorMessage = axiosError.response.data.message;
-            toast.error(errorMessage);
-          } else {
-            toast.error("An unknown error occurred. Please try again.");
-          }
-        } else {
-          console.error("Non-Axios error:", error); // Log non-Axios error
-          toast.error("An error occurred. Please try again.");
-        }
+        requestError(error as AxiosError<ApiResponse, unknown>);
       }
     },
   });

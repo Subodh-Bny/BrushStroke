@@ -27,18 +27,18 @@ interface User {
   _id?: string;
   role?: string;
 }
-interface Product {
-  id: number;
+interface Artwork {
+  _id?: string;
   title: string;
-  artist: string;
+  artist: User;
   price: number;
-  image: string;
+  category: string;
+  image: string | undefined;
+  description?: string;
+  availability: boolean;
 }
 
-interface Catogery {
-  id: number;
-  title: string;
-  artist: string;
-  price: number;
-  image: string;
+interface Category {
+  _id?: string;
+  name: string;
 }

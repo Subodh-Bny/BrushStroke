@@ -17,8 +17,8 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { AuthContext } from "@/context/AuthContext";
-import Link from "next/link";
 import routes from "@/config/routes";
+import { useRouter } from "next/navigation";
 
 const UserNav = ({
   isScrolled,
@@ -29,6 +29,7 @@ const UserNav = ({
 }) => {
   const { logout, user } = useContext(AuthContext);
   const [userType, setUserType] = useState("");
+  const router = useRouter();
   useEffect(() => {
     user && setUserType(user?.role || "");
   }, [user]);
@@ -67,14 +68,15 @@ const UserNav = ({
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           {(userType === "ARTIST" || userType === "ADMIN") && (
-            <DropdownMenuItem className="hover:cursor-pointer">
+            <DropdownMenuItem
+              className="hover:cursor-pointer"
+              onClick={() => router.push(routes.admin.dashboard)}
+            >
               <LayoutDashboard className="mr-2 h-4 w-4" />
 
               {userType === "ARTIST"
                 ? "Artist Panel"
-                : userType === "ADMIN" && (
-                    <Link href={routes.admin.dashboard}>Admin Panel</Link>
-                  )}
+                : userType === "ADMIN" && <span>Admin Panel</span>}
             </DropdownMenuItem>
           )}
           <DropdownMenuItem className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer">

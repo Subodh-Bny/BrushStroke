@@ -5,7 +5,7 @@ import routes from "@/config/routes";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <section className="w-full bg-red-100 h-screen ">
+    <section className="w-full bg-gray-300 h-screen ">
       <div className="container mx-auto flex justify-center flex-col items-center h-full">
         <Link href={routes.landing.home}>
           <h1

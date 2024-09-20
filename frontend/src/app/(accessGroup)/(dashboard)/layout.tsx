@@ -61,7 +61,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           <Button
             variant="ghost"
             className="w-full justify-start"
-            onClick={() => router.push(routes.admin.artworks.add)}
+            onClick={() => router.push(routes.admin.artworks.view)}
           >
             <ShoppingCart className="h-4 w-4" />
             {isSidebarOpen && <span className="ml-2">Artworks</span>}
