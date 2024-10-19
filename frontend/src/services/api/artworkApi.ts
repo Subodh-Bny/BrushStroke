@@ -59,11 +59,11 @@ export const useGetArtworkByCategory = ({
     queryKey: ["artworks", categoryId],
     queryFn: async () => {
       try {
-        const response: AxiosResponse<QueryResponse<Artwork>> =
+        const response: AxiosResponse<QueryResponse<Artwork[]>> =
           await axiosInstance.get<ApiResponse>(
-            `${endPoints.artwork}category?categoryId=${categoryId}`
+            `${endPoints.artwork}category/${categoryId}`
           );
-        return response?.data.data;
+        return response.data?.data;
       } catch (error) {
         requestError(error as AxiosError<ApiResponse>);
       }

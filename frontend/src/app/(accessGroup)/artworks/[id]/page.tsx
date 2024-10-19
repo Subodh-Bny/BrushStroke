@@ -38,7 +38,7 @@ const ArtworkPage = ({ params }: { params: { id: string } }) => {
   };
 
   return (
-    <Container className="mt-11 min-h-screen">
+    <Container className=" min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-2 gap-8 items-start">
           <div className="w-full h-full min-h-[70vh] relative rounded-lg overflow-hidden">

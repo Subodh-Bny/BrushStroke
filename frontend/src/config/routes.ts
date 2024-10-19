@@ -2,6 +2,7 @@ const routes = {
   landing: { home: "/", about: "/about", contact: "/contact" },
   auth: { login: "/auth/login", signup: "/auth/signup" },
   artworks: "/artworks",
+  artworkByCategoryId: "/artworks/category/",
   cart: "/cart",
   admin: {
     dashboard: "/admin",

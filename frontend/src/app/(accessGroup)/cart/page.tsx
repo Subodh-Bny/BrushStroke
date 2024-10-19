@@ -18,9 +18,13 @@ export default function CartPage() {
   const cartItems = useAppSelector((state) => state.cart);
   const { mutate: removeItem } = useRemoveCartItem();
   const items = cartItems || [];
-  const subtotal = items.reduce((sum, item) => sum + item?.artwork?.price, 0);
   const shipping = 10;
-  const total = subtotal < 0 ? subtotal + shipping : 0;
+
+  const subtotal = useAppSelector((state) =>
+    state.cart.reduce((sum, item) => sum + (item?.artwork?.price || 0), 0)
+  );
+
+  const total = subtotal > 0 ? subtotal + shipping : 0;
 
   const handleRemoveItem = (artworkId: string) => {
     removeItem(artworkId);

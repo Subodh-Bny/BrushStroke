@@ -76,7 +76,7 @@ export const getAllArtworks = async (req: Request, res: Response) => {
 
 export const getArtworksByCategory = async (req: Request, res: Response) => {
   try {
-    const { categoryId } = req.query;
+    const { categoryId } = req.params;
 
     if (!categoryId || !mongoose.Types.ObjectId.isValid(categoryId as string)) {
       return res.status(400).json({ error: "Invalid or missing category id" });

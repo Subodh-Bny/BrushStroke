@@ -8,7 +8,7 @@ import UserNav from "./UserNav";
 import { Button } from "../ui/button";
 import routes from "@/config/routes";
 import { AuthContext } from "@/context/AuthContext";
-import { useCartLength } from "@/hooks/useCartLentgth";
+import { useCartLength } from "@/hooks/useCartLength";
 import { Badge } from "../ui/badge";
 import { useGetCart } from "@/services/api/cartApi";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -79,7 +79,16 @@ const TopNav = () => {
               (cartLoading ? (
                 <ClipLoader size={15} />
               ) : (
-                <Link href={routes.cart}>
+                <Link
+                  href={routes.cart}
+                  className={`hover:cursor-pointer ${
+                    pathname === "/"
+                      ? isScrolled
+                        ? "text-black"
+                        : "text-white"
+                      : "text-black"
+                  }`}
+                >
                   <ShoppingCart className="hover:cursor-pointer" />
                   {cartLength > 0 && (
                     <Badge className="absolute hover:cursor-pointer -top-1 -right-2 bg-red-500 text-white rounded-full text-xs font-bold px-1 py-0">
