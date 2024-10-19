@@ -1,18 +1,19 @@
 "use client";
 import Container from "@/components/Container";
 import Header from "@/components/SectionHeading";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import routes from "@/config/routes";
-import { useGetArtworks } from "@/services/api/artworkApi";
+import { useGetArtworks, useUpdateArtwork } from "@/services/api/artworkApi";
 import { PlusCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import ClipLoader from "react-spinners/ClipLoader";
+import UpdateArtworkModal from "./UpdateArtwork";
 
 const ArtworksPage = () => {
   const { data: artworks, isLoading, isError } = useGetArtworks();
+  const { mutate: updateMutate } = useUpdateArtwork();
 
   if (isLoading) {
     return (
@@ -27,6 +28,10 @@ const ArtworksPage = () => {
       <Container>Failed to load artworks. Please try again later.</Container>
     );
   }
+
+  const handleArtworkUpdate = (artwork: Partial<Artwork>) => {
+    updateMutate(artwork);
+  };
 
   return (
     <Container>
@@ -46,9 +51,9 @@ const ArtworksPage = () => {
           gridAutoFlow: "dense",
         }}
       >
-        {artworks?.map((product, index) => (
+        {artworks?.map((artwork, index) => (
           <Card
-            key={product._id}
+            key={artwork._id}
             className={`relative overflow-hidden group hover:cursor-pointer ${
               index % 2 !== 0 && index <= 5 && "mt-4"
             }`}
@@ -60,8 +65,8 @@ const ArtworksPage = () => {
           >
             <div className="relative w-full h-full">
               <Image
-                src={product.image || "/notFound.jpg"}
-                alt={product.title}
+                src={artwork.image || "/notFound.jpg"}
+                alt={artwork.title}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-110"
                 sizes="(max-width: 768px) 50vw, (min-width: 769px) 25vw"
@@ -69,14 +74,15 @@ const ArtworksPage = () => {
               <div className="absolute inset-0 bg-black bg-opacity-40 transition-opacity duration-300 opacity-0 group-hover:opacity-100 " />
               <CardContent className="absolute inset-0 flex flex-col justify-end p-4 text-white transition-opacity duration-300 ">
                 <div className="group-hover:opacity-100 opacity-0 ">
-                  <h2 className="text-2xl font-bold mb-1">{product.title}</h2>
+                  <h2 className="text-2xl font-bold mb-1">{artwork.title}</h2>
                   <p className="text-sm mb-1">
-                    by {product.artist && product.artist.username}
+                    by {artwork.artist && artwork.artist.username}
                   </p>
-                  <p className="text-lg font-bold mb-2">${product.price}</p>
-                  <Button className="w-full bg-white text-black hover:bg-gray-200">
-                    Update
-                  </Button>
+                  <p className="text-lg font-bold mb-2">${artwork.price}</p>
+                  <UpdateArtworkModal
+                    artwork={artwork}
+                    onUpdate={handleArtworkUpdate}
+                  />
                 </div>
               </CardContent>
             </div>

@@ -11,6 +11,8 @@ import {
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import routes from "@/config/routes";
+import toast from "react-hot-toast";
+// import { useLogout } from "@/services/api/authApi";
 
 type AuthContextType = {
   isLoggedIn: boolean;
@@ -37,13 +39,15 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [token, setToken] = useState<string | undefined>(undefined);
   const router = useRouter();
+  // const { mutate: logoutMutate } = useLogout();
 
   useEffect(() => {
     const userToken = Cookies.get("jwt");
-    console.log(userToken);
+    // console.log(userToken);
     if (userToken) {
       setIsLoggedIn(true);
       setToken(userToken);
+
       const userData = Cookies.get("user");
       if (userData) {
         setUser(JSON.parse(userData));
@@ -54,12 +58,15 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const logout = () => {
+    // logoutMutate();
     Cookies.remove("jwt");
     Cookies.remove("user");
     setIsLoggedIn(false);
     setToken(undefined);
     setUser(undefined);
     router.push(routes.landing.home);
+
+    toast.success("Logged out");
   };
 
   return (

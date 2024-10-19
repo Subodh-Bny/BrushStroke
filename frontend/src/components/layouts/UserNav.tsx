@@ -33,7 +33,6 @@ const UserNav = ({
   useEffect(() => {
     user && setUserType(user?.role || "");
   }, [user]);
-  console.log(userType);
   return (
     <nav
       className={`flex gap-2 justify-self-end${

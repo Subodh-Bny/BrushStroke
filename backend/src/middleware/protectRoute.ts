@@ -13,10 +13,11 @@ const protectRoute = async (
 ) => {
   try {
     const token = req.cookies.jwt;
+    // console.log(req);
     if (!token) {
       return res
         .status(401)
-        .json({ error: "Uauthorized  - No Token Provided" });
+        .json({ message: "Uauthorized - No Token Provided" });
     }
 
     const decoded = jwt.verify(
@@ -25,20 +26,20 @@ const protectRoute = async (
     ) as JwtPayloadWithUserId;
 
     if (!decoded) {
-      return res.status(401).json({ error: "Uauthorized  - Invalid Token" });
+      return res.status(401).json({ message: "Uauthorized  - Invalid Token" });
     }
 
     const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
     //@ts-ignore
     req.user = user;
 
     next();
   } catch (error) {
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 

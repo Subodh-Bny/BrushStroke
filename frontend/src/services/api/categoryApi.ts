@@ -38,3 +38,48 @@ export const useGetCategories = () => {
     },
   });
 };
+
+export const useUpdateCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["category"],
+
+    mutationFn: async (data: Partial<Category>) => {
+      try {
+        const categoryId = data._id;
+        const response: AxiosResponse<QueryResponse> =
+          await axiosInstance.put<ApiResponse>(
+            endPoints.updateCategory + categoryId,
+            data
+          );
+        toast.success("Category updated.");
+        queryClient.invalidateQueries({ queryKey: ["category"] });
+
+        return response.data.data || {};
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse>);
+      }
+    },
+  });
+};
+
+export const useDeleteCategory = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["category"],
+
+    mutationFn: async (categoryId: string) => {
+      try {
+        const response: AxiosResponse<QueryResponse> =
+          await axiosInstance.delete<ApiResponse>(
+            endPoints.deleteCategory + categoryId
+          );
+        queryClient.invalidateQueries({ queryKey: ["category"] });
+        toast.success("Category deleted.");
+        return response.data.data || {};
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse>);
+      }
+    },
+  });
+};

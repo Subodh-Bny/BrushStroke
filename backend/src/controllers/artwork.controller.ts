@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
-import User, { IUser } from "../models/user.model";
+import User from "../models/user.model";
 import Artwork from "../models/artwork.model";
 
 export const createArtwork = async (req: Request, res: Response) => {
@@ -8,21 +8,21 @@ export const createArtwork = async (req: Request, res: Response) => {
     const { title, description, price, image, category, artist } = req.body;
     if (category) {
       if (!mongoose.Types.ObjectId.isValid(category)) {
-        return res.status(400).json({ error: "Invalid category id" });
+        return res.status(400).json({ message: "Invalid category id" });
       }
     }
     let user;
     if (artist) {
       if (!mongoose.Types.ObjectId.isValid(artist)) {
-        return res.status(400).json({ error: "Invalid artist id" });
+        return res.status(400).json({ message: "Invalid artist id" });
       }
 
       user = await User.findById(artist);
       if (user) {
         if (user.role !== "ARTIST")
-          return res.status(400).json({ error: "User is not an artist" });
+          return res.status(400).json({ message: "User is not an artist" });
       } else {
-        return res.status(400).json({ error: "User not found" });
+        return res.status(400).json({ message: "User not found" });
       }
     }
 
@@ -45,6 +45,7 @@ export const createArtwork = async (req: Request, res: Response) => {
         description: newArtwork.description,
         price: newArtwork.description,
         image: newArtwork.image,
+        category: newArtwork.category,
         artist: user,
       },
     });
@@ -52,7 +53,7 @@ export const createArtwork = async (req: Request, res: Response) => {
     console.log("Error in create artwork controller", error.message);
     return res
       .status(500)
-      .json({ error: "Internal server error", message: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -64,12 +65,12 @@ export const getAllArtworks = async (req: Request, res: Response) => {
     });
     return res
       .status(200)
-      .json({ message: "Artworks fetched successfully", artworks });
+      .json({ message: "Artworks fetched successfully", data: artworks });
   } catch (error: any) {
     console.error("Error in getAllArtworks controller:", error.message);
     return res
       .status(500)
-      .json({ error: "Internal server error", message: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -91,13 +92,40 @@ export const getArtworksByCategory = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Artworks fetched successfully",
-      artworks,
+      data: artworks,
     });
   } catch (error: any) {
     console.log("Error in getArtworksByCategory controller", error.message);
     return res
       .status(500)
-      .json({ error: "Internal server error", message: error.message });
+      .json({ message: "Internal server error", error: error.message });
+  }
+};
+export const getArtworkById = async (req: Request, res: Response) => {
+  try {
+    const artworkId = req.params.id as string;
+
+    if (!artworkId || !mongoose.Types.ObjectId.isValid(artworkId as string)) {
+      return res.status(400).json({ error: "Invalid or missing artwork id" });
+    }
+
+    const artwork = await Artwork.findOne({ _id: artworkId }).populate(
+      "artist category"
+    );
+
+    if (!artwork) {
+      return res.status(404).json({ error: "No artwork found" });
+    }
+
+    return res.status(200).json({
+      message: "Artwork fetched successfully",
+      data: artwork,
+    });
+  } catch (error: any) {
+    console.log("Error in getARtworkById controller", error.message);
+    return res
+      .status(500)
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -108,23 +136,23 @@ export const updateArtwork = async (req: Request, res: Response) => {
 
     if (category) {
       if (!mongoose.Types.ObjectId.isValid(category)) {
-        return res.status(400).json({ error: "Invalid category id" });
+        return res.status(400).json({ message: "Invalid category id" });
       }
     }
 
     let user;
     if (artist) {
       if (!mongoose.Types.ObjectId.isValid(artist)) {
-        return res.status(400).json({ error: "Invalid artist id" });
+        return res.status(400).json({ message: "Invalid artist id" });
       }
 
       user = await User.findById(artist);
       if (user) {
         if (user.role !== "ARTIST") {
-          return res.status(400).json({ error: "User is not an artist" });
+          return res.status(400).json({ message: "User is not an artist" });
         }
       } else {
-        return res.status(400).json({ error: "User not found" });
+        return res.status(400).json({ message: "User not found" });
       }
     }
 
@@ -143,7 +171,7 @@ export const updateArtwork = async (req: Request, res: Response) => {
     );
 
     if (!updatedArtwork) {
-      return res.status(404).json({ error: "Artwork not found" });
+      return res.status(404).json({ message: "Artwork not found" });
     }
 
     return res.status(200).json({
@@ -154,7 +182,7 @@ export const updateArtwork = async (req: Request, res: Response) => {
     console.log("Error in update artwork controller", error.message);
     return res
       .status(500)
-      .json({ error: "Internal server error", message: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };
 
@@ -162,17 +190,17 @@ export const deleteArtwork = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     if (!id) {
-      return res.status(400).json({ error: "Artwork id is required" });
+      return res.status(400).json({ message: "Artwork id is required" });
     }
     const result = await Artwork.findByIdAndDelete(id);
     if (!result) {
-      return res.status(404).json({ error: "Couldn't delete artwork" });
+      return res.status(404).json({ message: "Couldn't delete artwork" });
     }
     return res.status(202).json({ message: "Artwork deleted successfully" });
   } catch (error: any) {
     console.log("Error in delete artwork controller", error.message);
     return res
       .status(500)
-      .json({ error: "Internal server error", message: error.message });
+      .json({ message: "Internal server error", error: error.message });
   }
 };

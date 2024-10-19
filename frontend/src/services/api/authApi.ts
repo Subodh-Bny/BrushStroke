@@ -54,7 +54,6 @@ export const useLogin = ({
         const response: AxiosResponse<LoginResponse> =
           await axiosInstance.post<ApiResponse>(endPoints.login, data);
         toast.success(response.data.message);
-        console.log(response.data);
 
         const user: User | undefined = response.data.data;
         const token: string | undefined = response.data.token;
@@ -78,3 +77,19 @@ export const useLogin = ({
     },
   });
 };
+
+// export const useLogout = () => {
+//   return useMutation({
+//     mutationKey: ["user"],
+//     mutationFn: async () => {
+//       try {
+//         const response: AxiosResponse<QueryResponse> = await axiosInstance.post(
+//           endPoints.logout
+//         );
+//         toast.success(response.data.message);
+//       } catch (error) {
+//         requestError(error as AxiosError<ApiResponse>);
+//       }
+//     },
+//   });
+// };

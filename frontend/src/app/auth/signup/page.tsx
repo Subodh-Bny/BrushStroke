@@ -98,7 +98,6 @@ const SignupPage = () => {
             {...register("confirmPassword", {
               required: "Passwords do not match",
               validate: (val: string) => {
-                console.log(val);
                 if (watch("password") !== val) {
                   return "Your passwords do no match";
                 }

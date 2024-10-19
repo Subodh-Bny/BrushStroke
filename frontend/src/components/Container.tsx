@@ -9,7 +9,7 @@ const Container = ({
   className?: string;
 }) => {
   return (
-    <section className={cn("container mx-auto px-4 py-8", className)}>
+    <section className={cn("container mx-auto px-8 py-16", className)}>
       {children}
     </section>
   );

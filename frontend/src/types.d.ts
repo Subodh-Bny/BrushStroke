@@ -41,4 +41,14 @@ interface Artwork {
 interface Category {
   _id?: string;
   name: string;
+  slug?: string;
+}
+
+interface CartItem {
+  artwork: Artwork;
+  quantity: number;
+}
+interface Cart {
+  usreId: string;
+  items: CartItem[];
 }

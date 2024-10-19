@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
   ChevronRight,
+  FileStack,
   Home,
   Package,
   ShoppingCart,
@@ -65,6 +66,14 @@ const Layout = ({ children }: { children: ReactNode }) => {
           >
             <ShoppingCart className="h-4 w-4" />
             {isSidebarOpen && <span className="ml-2">Artworks</span>}
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full justify-start"
+            onClick={() => router.push(routes.admin.categories)}
+          >
+            <FileStack className="h-4 w-4" />
+            {isSidebarOpen && <span className="ml-2">Categories</span>}
           </Button>
           <Button
             variant="ghost"

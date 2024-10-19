@@ -105,6 +105,7 @@ export default function HeroArtworkCarousel() {
                   src={artwork.image}
                   alt={`Artwork: ${artwork.title} by ${artwork.artist}`}
                   fill
+                  sizes="100vw"
                   className="object-cover"
                 />
               </div>
