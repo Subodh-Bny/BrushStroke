@@ -8,13 +8,6 @@ import useApiErrorHandler from "@/hooks/useApiErrorHandler";
 import { useGetArtworkById } from "@/services/api/artworkApi";
 import { Button } from "@/components/ui/button";
 import { useAddToCart } from "@/services/api/cartApi";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
 
 const ArtworkPage = ({ params }: { params: { id: string } }) => {
   const { id: artworkId } = params;

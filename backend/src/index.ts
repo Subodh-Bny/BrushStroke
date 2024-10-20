@@ -33,7 +33,7 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/artwork", artworkRoutes);
 app.use("/api/payment", paymentRoutes);
-app.use("/api/orders", orderRoutes);
+app.use("/api/order", orderRoutes);
 app.use("/api/cart", cartRoutes);
 
 app.listen(port, () => {

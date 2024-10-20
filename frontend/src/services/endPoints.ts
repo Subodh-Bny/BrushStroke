@@ -16,6 +16,12 @@ const endPoints = {
 
   //cart
   cart: "/cart/",
+
+  //order
+  order: "/order/",
+
+  //khalti
+  khaltiInitiate: "/payment/initiate",
 };
 
 export default endPoints;

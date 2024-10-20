@@ -7,6 +7,8 @@ export interface IUser extends Document {
   role: string;
   profilePic: string;
   createdAt: Date;
+  shippingAddress: string;
+  phoneNumber: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -20,6 +22,8 @@ const userSchema = new Schema<IUser>({
   },
   profilePic: { type: String, default: "" },
   createdAt: { type: Date, default: Date.now },
+  shippingAddress: { type: String, default: "" },
+  phoneNumber: { type: String },
 });
 
 const User = mongoose.model<IUser>("User", userSchema);

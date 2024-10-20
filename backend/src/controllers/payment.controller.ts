@@ -13,28 +13,33 @@ export const initiatePayment = async (req: Request, res: Response) => {
       customerInfo,
     } = req.body;
 
+    const paymentData = {
+      return_url: returnUrl,
+      website_url: websiteUrl,
+      amount: amount * 100,
+      purchase_order_id: purchaseOrderId,
+      purchase_order_name: purchaseOrderName,
+      customer_info: customerInfo,
+    };
+    console.log(paymentData);
+
     const response = await axios.post(
       "https://a.khalti.com/api/v2/epayment/initiate/",
-      {
-        return_url: returnUrl,
-        website_url: websiteUrl,
-        amount,
-        purchase_order_id: purchaseOrderId,
-        purchase_order_name: purchaseOrderName,
-        customer_info: customerInfo,
-      },
+      paymentData,
       {
         headers: {
-          Authorization: `Key ${process.env.LIVE_SECRET_KEY}`,
+          Authorization: `key ${process.env.LIVE_SECRET_KEY}`,
           "Content-Type": "application/json",
         },
       }
     );
-
+    console.log(response);
     res.json(response.data);
   } catch (error) {
-    console.error("Error initiating payment:", error);
-    res.status(500).json({ error: "Failed to initiate payment" });
+    console.error("Error initiating payment:");
+    res
+      .status(500)
+      .json({ message: "Failed to initiate payment", error: req.body });
   }
 };
 
@@ -45,7 +50,7 @@ export const verifyPayment = async (
 ) => {
   try {
     const response = await axios.post(
-      "https://a.khalti.com/api/v2/epayment/verify/",
+      "https://a.khalti.com/api/v2/epayment/lookup/",
       {
         token,
         amount,

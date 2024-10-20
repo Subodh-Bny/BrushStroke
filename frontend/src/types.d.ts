@@ -26,6 +26,8 @@ interface User {
   username: string;
   _id?: string;
   role?: string;
+  shippingAddress?: string;
+  phoneNumber?: string;
 }
 interface Artwork {
   _id?: string;
@@ -51,4 +53,28 @@ interface CartItem {
 interface Cart {
   usreId: string;
   items: CartItem[];
+}
+
+interface Order {
+  _id?: string;
+  artworks: string[];
+  status?: string;
+  totalPrice: number;
+  shippingAddress: string;
+  phoneNumber: string;
+}
+
+interface CustomerInfo {
+  name: string;
+  email: string;
+  phone: string;
+}
+
+interface KhaltiInitiate {
+  returnUrl: string;
+  websiteUrl: string;
+  amount: number;
+  purchaseOrderId: string;
+  purchaseOrderName: string;
+  customerInfo: CustomerInfo;
 }

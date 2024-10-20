@@ -1,23 +1,46 @@
 import { Request, Response } from "express";
 import Order from "../models/order.model";
+import { CustomRequest } from "./cart.controller";
+import User from "../models/user.model";
 
-export const createOrder = async (req: Request, res: Response) => {
+export const createOrder = async (req: CustomRequest, res: Response) => {
   try {
-    const { user, artworks, status, totalPrice } = req.body;
+    const userId = req?.user?._id;
+    if (userId) {
+      const { artworks, status, totalPrice, shippingAddress, phoneNumber } =
+        req.body;
 
-    const newOrder = new Order({
-      user,
-      artworks,
-      status,
-      totalPrice,
-    });
+      const newOrder = new Order({
+        userId,
+        artworks,
+        status,
+        totalPrice,
+      });
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          $set: {
+            shippingAddress,
+            phoneNumber,
+          },
+        },
+        { new: true } // Return the updated user
+      ).select("-password -role");
 
-    await newOrder.save();
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
 
-    return res.status(201).json({
-      message: "Order created successfully",
-      order: newOrder,
-    });
+      await newOrder.save();
+
+      return res.status(201).json({
+        message: "Order created successfully",
+        data: {
+          order: newOrder,
+          user: updatedUser,
+        },
+      });
+    }
   } catch (error: any) {
     console.log("Error in createOrder controller", error.message);
     return res.status(500).json({ error: "Internal server error" });

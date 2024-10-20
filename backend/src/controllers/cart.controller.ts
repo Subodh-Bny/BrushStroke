@@ -2,7 +2,7 @@ import { Response, Request } from "express";
 import mongoose from "mongoose";
 import Cart, { ICartItem } from "../models/cart.model";
 
-interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
   user?: { _id: string };
 }
 

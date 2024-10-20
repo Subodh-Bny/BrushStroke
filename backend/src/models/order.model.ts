@@ -1,9 +1,10 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IOrder extends Document {
-  user: mongoose.Types.ObjectId;
+  userId: mongoose.Types.ObjectId;
   artworks: mongoose.Types.ObjectId[];
   status: string; // "Pending", "Shipped", "Delivered"
+
   totalPrice: number;
   createdAt: Date;
   updatedAt: Date;
@@ -11,10 +12,11 @@ export interface IOrder extends Document {
 
 const OrderSchema: Schema = new Schema(
   {
-    user: {
+    userId: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
     artworks: [
       {
@@ -27,10 +29,12 @@ const OrderSchema: Schema = new Schema(
       type: String,
       enum: ["Pending", "Shipped", "Delivered"],
       default: "Pending",
+      index: true,
     },
     totalPrice: {
       type: Number,
       required: true,
+      min: [0, "Total price cannot be negative"],
     },
   },
   {

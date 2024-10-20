@@ -10,6 +10,8 @@ const routes = {
     orders: "/admin/orders",
     categories: "/admin/category",
   },
+
+  khaltiReturn: "/payment/",
 };
 
 export default routes;

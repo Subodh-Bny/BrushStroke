@@ -10,18 +10,23 @@ import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 
 export const useAddToCart = () => {
+  const auth = useContext(AuthContext);
   const dispatch = useAppDispatch();
   return useMutation({
     mutationKey: ["cart"],
     mutationFn: async (artwork: Artwork) => {
       try {
-        const response: AxiosResponse<QueryResponse> =
-          await axiosInstance.post<ApiResponse>(endPoints.cart, {
-            artworkId: artwork._id,
-          });
-        dispatch(addToCart(artwork));
-        toast.success(response.data.message);
-        return response.data?.data || {};
+        if (auth.isLoggedIn) {
+          const response: AxiosResponse<QueryResponse> =
+            await axiosInstance.post<ApiResponse>(endPoints.cart, {
+              artworkId: artwork._id,
+            });
+          dispatch(addToCart(artwork));
+          toast.success(response.data.message);
+          return response.data?.data || {};
+        } else {
+          toast.error("Login to add to cart!");
+        }
       } catch (error: unknown) {
         requestError(error as AxiosError<ApiResponse, unknown>);
       }
