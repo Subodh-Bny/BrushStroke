@@ -43,7 +43,7 @@ export const createOrder = async (req: CustomRequest, res: Response) => {
     }
   } catch (error: any) {
     console.log("Error in createOrder controller", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -57,7 +57,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.log("Error in getAllOrders controller", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -68,7 +68,7 @@ export const getOrderById = async (req: Request, res: Response) => {
     const order = await Order.findById(id).populate("user artworks");
 
     if (!order) {
-      return res.status(404).json({ error: "Order not found" });
+      return res.status(404).json({ message: "Order not found" });
     }
 
     return res.status(200).json({
@@ -77,7 +77,7 @@ export const getOrderById = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.log("Error in getOrderById controller", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -91,7 +91,7 @@ export const updateOrder = async (req: Request, res: Response) => {
     }).populate("user artworks");
 
     if (!updatedOrder) {
-      return res.status(404).json({ error: "Order not found" });
+      return res.status(404).json({ message: "Order not found" });
     }
 
     return res.status(200).json({
@@ -100,7 +100,7 @@ export const updateOrder = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.log("Error in updateOrder controller", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -111,7 +111,7 @@ export const deleteOrder = async (req: Request, res: Response) => {
     const deletedOrder = await Order.findByIdAndDelete(id);
 
     if (!deletedOrder) {
-      return res.status(404).json({ error: "Order not found" });
+      return res.status(404).json({ message: "Order not found" });
     }
 
     return res.status(200).json({
@@ -119,6 +119,6 @@ export const deleteOrder = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.log("Error in deleteOrder controller", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

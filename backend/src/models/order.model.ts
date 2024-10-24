@@ -8,6 +8,14 @@ export interface IOrder extends Document {
   totalPrice: number;
   createdAt: Date;
   updatedAt: Date;
+  paymentDetails: {
+    pidx: string;
+    total_amount: number;
+    status: string;
+    transaction_id: string;
+    fee: number;
+    refunded: boolean;
+  };
 }
 
 const OrderSchema: Schema = new Schema(
@@ -35,6 +43,31 @@ const OrderSchema: Schema = new Schema(
       type: Number,
       required: true,
       min: [0, "Total price cannot be negative"],
+    },
+
+    paymentDetails: {
+      pidx: {
+        type: String,
+      },
+      total_amount: {
+        type: Number,
+      },
+      status: {
+        type: String,
+
+        default: "Pending",
+      },
+      transaction_id: {
+        type: String,
+      },
+      fee: {
+        type: Number,
+        default: 0,
+      },
+      refunded: {
+        type: Boolean,
+        default: false,
+      },
     },
   },
   {

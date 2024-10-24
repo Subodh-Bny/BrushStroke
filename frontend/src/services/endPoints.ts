@@ -21,7 +21,11 @@ const endPoints = {
   order: "/order/",
 
   //khalti
-  khaltiInitiate: "/payment/initiate",
+  khaltiInitiate: "/payment/initiateKhalti",
+  verifyKhalti: "/payment/verifyKhalti",
+
+  //esewa
+  generateSignature: "/payment/generate-esewa-signature",
 };
 
 export default endPoints;

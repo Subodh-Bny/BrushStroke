@@ -3,14 +3,15 @@ import axiosInstance from "../axiosInstance";
 import endPoints from "../endPoints";
 import { AxiosError, AxiosResponse } from "axios";
 import { requestError } from "./apiError";
-import { useKhaltiInitiate } from "./khalti/khaltiApi";
+import { useKhaltiInitiate } from "./payment/khaltiApi";
 import routes from "@/config/routes";
+// import { useEsewaPayment } from "./payment/esewaApi";
 
 interface OrderData {
   user: User;
   order: Order;
 }
-export const useCreateOrder = () => {
+export const useCreateOrderKhalti = () => {
   const { mutate: khaltiInitiate } = useKhaltiInitiate();
   return useMutation({
     mutationKey: ["order"],
@@ -28,7 +29,7 @@ export const useCreateOrder = () => {
             purchaseOrderId: order?._id || "",
             purchaseOrderName: "Artwork order",
             customerInfo: {
-              name: "Subodh Adhikari",
+              name: user?.username,
               email: user?.email,
               phone: user?.phoneNumber || "",
             },
@@ -40,6 +41,24 @@ export const useCreateOrder = () => {
         return response.data?.data;
       } catch (error) {
         requestError(error as AxiosError<ApiResponse, unknown>);
+      }
+    },
+  });
+};
+
+export const useCreateOrderEsewa = () => {
+  return useMutation<Order | undefined, AxiosError<ApiResponse>, Order>({
+    mutationKey: ["order"],
+    mutationFn: async (data: Order): Promise<Order | undefined> => {
+      try {
+        const response: AxiosResponse<QueryResponse<OrderData>> =
+          await axiosInstance.post<ApiResponse>(endPoints.order, data);
+        const order = response.data?.data?.order;
+
+        return order;
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse, unknown>);
+        throw error;
       }
     },
   });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -24,29 +24,40 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useCreateOrder } from "@/services/api/orderApi";
+import {
+  useCreateOrderKhalti,
+  useCreateOrderEsewa,
+} from "@/services/api/orderApi";
 import ClipLoader from "react-spinners/ClipLoader";
 import Cookies from "js-cookie";
+import routes from "@/config/routes";
+import { useCreateSignature } from "@/services/api/payment/esewaApi";
+import toast from "react-hot-toast";
 
 export default function CartPage() {
   const cartItems = useAppSelector((state) => state.cart);
   const { mutate: removeItem } = useRemoveCartItem();
-  const { mutate: createOrder, isPending: createOrderPending } =
-    useCreateOrder();
-  const items = cartItems || [];
-  const shipping = 0;
-
+  const { mutate: createKhalitOrder, isPending: createKhaltiOrderPending } =
+    useCreateOrderKhalti();
+  const { mutate: createEsewaOrder, isPending: createEsewaOrderPending } =
+    useCreateOrderEsewa();
+  const [signature, setSignature] = useState<string>("");
+  const createSignatureMutation = useCreateSignature();
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [shippingDetails, setShippingDetails] = useState({
     shippingAddress: "",
     phoneNumber: "",
   });
   const [phoneError, setPhoneError] = useState("");
+  const [paymentData, setPaymentData] = useState<EsewaPayment>();
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const subtotal = useAppSelector((state) =>
     state.cart.reduce((sum, item) => sum + (item?.artwork?.price || 0), 0)
   );
 
+  const shipping = 0;
+  const items = cartItems || [];
   const total = subtotal > 0 ? subtotal + shipping : 0;
 
   const handleRemoveItem = (artworkId: string) => {
@@ -84,6 +95,55 @@ export default function CartPage() {
     }));
   };
 
+  const handleGenerateSignature = async () => {
+    const artworks = items
+      .map((item) => item.artwork._id)
+      .filter((id): id is string => id !== undefined);
+
+    const orderData = {
+      artworks,
+      totalPrice: total,
+      shippingAddress: shippingDetails.shippingAddress,
+      phoneNumber: shippingDetails.phoneNumber,
+    };
+
+    const order = createEsewaOrder(orderData);
+
+    const paymentData = {
+      amount: total.toString(),
+      tax_amount: "0",
+      total_amount: total.toString(),
+      //@ts-expect-error couldnot find the correct way to define the type for createEsewaOrder mutation
+      transaction_uuid: order?._id,
+      product_code: "EPAYTEST",
+      product_service_charge: "0",
+      product_delivery_charge: "0",
+      success_url: process.env.NEXT_PUBLIC_HOMEURL + routes.khaltiReturn,
+      failure_url: process.env.NEXT_PUBLIC_HOMEURL + routes.khaltiReturn,
+    };
+
+    setPaymentData(paymentData);
+    try {
+      const generatedSignature = await createSignatureMutation.mutateAsync(
+        paymentData
+      );
+      setSignature(generatedSignature);
+    } catch (error: unknown) {
+      toast.error("Error generating signature");
+    }
+  };
+
+  const handleEsewaSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!signature) {
+      await handleGenerateSignature();
+    }
+
+    // Now, redirect the user to eSewa's payment page
+    formRef.current?.submit();
+  };
+
   const handleSubmitCheckout = () => {
     const artworks = items
       .map((item) => item.artwork._id)
@@ -96,9 +156,9 @@ export default function CartPage() {
       phoneNumber: shippingDetails.phoneNumber,
     };
 
-    createOrder(orderData);
+    createKhalitOrder(orderData);
     console.log(orderData);
-    !createOrderPending && setIsCheckoutOpen(false);
+    !createKhaltiOrderPending && setIsCheckoutOpen(false);
   };
 
   return (
@@ -224,11 +284,78 @@ export default function CartPage() {
               disabled={
                 (phoneError || shippingDetails.phoneNumber === ""
                   ? true
-                  : false) || createOrderPending
+                  : false) || createKhaltiOrderPending
               }
+              className="bg-indigo-600 hover:bg-indigo-700"
             >
-              {createOrderPending ? <ClipLoader size={15} /> : "Complete Order"}
+              {createKhaltiOrderPending ? (
+                <ClipLoader size={15} />
+              ) : (
+                "Pay with khalti"
+              )}
             </Button>
+            <form
+              id="esewa-form"
+              action="https://rc-epay.esewa.com.np/api/epay/main/v2/form"
+              method="POST"
+              ref={formRef}
+              onSubmit={handleEsewaSubmit}
+            >
+              <input type="hidden" name="amount" value={total} />
+              <input type="hidden" name="tax_amount" value={"0"} />
+              <input type="hidden" name="total_amount" value={"0"} />
+              <input
+                type="hidden"
+                name="transaction_uuid"
+                value={paymentData?.transaction_uuid}
+              />
+              <input
+                type="hidden"
+                name="product_code"
+                value={paymentData?.product_code}
+              />
+              <input
+                type="hidden"
+                name="product_service_charge"
+                value={paymentData?.product_service_charge}
+              />
+              <input
+                type="hidden"
+                name="product_delivery_charge"
+                value={paymentData?.product_delivery_charge}
+              />
+              <input
+                type="hidden"
+                name="success_url"
+                value={paymentData?.success_url}
+              />
+              <input
+                type="hidden"
+                name="failure_url"
+                value={paymentData?.failure_url}
+              />
+              <input
+                type="hidden"
+                name="signed_field_names"
+                value="total_amount,transaction_uuid,product_code"
+              />
+              <input type="hidden" name="signature" value={signature} />
+              <Button
+                type="submit"
+                className="bg-green-600 hover:bg-green-700"
+                disabled={
+                  (phoneError || shippingDetails.phoneNumber === ""
+                    ? true
+                    : false) || createEsewaOrderPending
+                }
+              >
+                {createEsewaOrderPending ? (
+                  <ClipLoader size={15} />
+                ) : (
+                  "Pay with eSewa"
+                )}
+              </Button>
+            </form>
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -55,6 +55,14 @@ interface Cart {
   items: CartItem[];
 }
 
+interface PaymentDetails {
+  pidx: string;
+  total_amount: number;
+  status: string;
+  transaction_id: string;
+  fee: number;
+  refunded: boolean;
+}
 interface Order {
   _id?: string;
   artworks: string[];
@@ -62,6 +70,7 @@ interface Order {
   totalPrice: number;
   shippingAddress: string;
   phoneNumber: string;
+  paymentDetails?: PaymentDetails;
 }
 
 interface CustomerInfo {
@@ -77,4 +86,18 @@ interface KhaltiInitiate {
   purchaseOrderId: string;
   purchaseOrderName: string;
   customerInfo: CustomerInfo;
+}
+
+interface EsewaPayment {
+  amount: string;
+  failure_url: string;
+  product_delivery_charge: string;
+  product_service_charge: string;
+  product_code: string;
+  //   signature: string;
+  //   signed_field_names: string;
+  success_url: string;
+  tax_amount: string;
+  total_amount: string;
+  transaction_uuid: string;
 }

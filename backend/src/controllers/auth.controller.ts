@@ -36,7 +36,7 @@ export const signup = async (req: Request, res: Response) => {
 
     await newUser.save();
 
-    generateTokenAndCookie(newUser._id, res);
+    // generateTokenAndCookie(newUser._id, res);
 
     return res.status(201).json({
       message: "Signup successfull",
