@@ -33,6 +33,7 @@ import Cookies from "js-cookie";
 import routes from "@/config/routes";
 import { useCreateSignature } from "@/services/api/payment/esewaApi";
 import toast from "react-hot-toast";
+import LoadingPopup from "@/components/LoadingPopup";
 
 export default function CartPage() {
   const cartItems = useAppSelector((state) => state.cart);
@@ -144,7 +145,7 @@ export default function CartPage() {
     formRef.current?.submit();
   };
 
-  const handleSubmitCheckout = () => {
+  const handleSubmitKhaltiCheckout = () => {
     const artworks = items
       .map((item) => item.artwork._id)
       .filter((id): id is string => id !== undefined);
@@ -157,8 +158,7 @@ export default function CartPage() {
     };
 
     createKhalitOrder(orderData);
-    console.log(orderData);
-    !createKhaltiOrderPending && setIsCheckoutOpen(false);
+    setIsCheckoutOpen(false);
   };
 
   return (
@@ -280,7 +280,7 @@ export default function CartPage() {
           </div>
           <DialogFooter>
             <Button
-              onClick={handleSubmitCheckout}
+              onClick={handleSubmitKhaltiCheckout}
               disabled={
                 (phoneError || shippingDetails.phoneNumber === ""
                   ? true
@@ -359,6 +359,8 @@ export default function CartPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <LoadingPopup isLoading={createKhaltiOrderPending} />
     </Container>
   );
 }

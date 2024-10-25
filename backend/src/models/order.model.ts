@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IOrder extends Document {
-  userId: mongoose.Types.ObjectId;
+  user: mongoose.Types.ObjectId;
   artworks: mongoose.Types.ObjectId[];
   status: string; // "Pending", "Shipped", "Delivered"
 
@@ -20,7 +20,7 @@ export interface IOrder extends Document {
 
 const OrderSchema: Schema = new Schema(
   {
-    userId: {
+    user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,

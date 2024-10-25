@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import endPoints from "../endPoints";
 import { AxiosError, AxiosResponse } from "axios";
@@ -22,7 +22,7 @@ export const useCreateOrderKhalti = () => {
         const order = response.data?.data?.order;
         const user = response.data.data?.user;
         if (order && user) {
-          khaltiInitiate({
+          await khaltiInitiate({
             returnUrl: process.env.NEXT_PUBLIC_HOMEURL + routes.khaltiReturn,
             websiteUrl: process.env.NEXT_PUBLIC_HOMEURL + routes.landing.home,
             amount: order?.totalPrice || 0,
@@ -58,7 +58,40 @@ export const useCreateOrderEsewa = () => {
         return order;
       } catch (error) {
         requestError(error as AxiosError<ApiResponse, unknown>);
-        throw error;
+      }
+    },
+  });
+};
+
+export const useGetOrderByUserId = ({ userId }: { userId: string }) => {
+  return useQuery({
+    queryKey: ["userOrders", userId],
+    queryFn: async () => {
+      try {
+        const response: AxiosResponse<QueryResponse<Order[]>> =
+          await axiosInstance.get<ApiResponse>(
+            endPoints.getOrderByUserId + userId
+          );
+        // console.log(response.data);
+        return response.data?.data || [];
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse, unknown>);
+      }
+    },
+  });
+};
+
+export const useGetOrders = () => {
+  return useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      try {
+        const response: AxiosResponse<QueryResponse<Order[]>> =
+          await axiosInstance.get<ApiResponse>(endPoints.order);
+        // console.log(response.data);
+        return response.data?.data || [];
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse, unknown>);
       }
     },
   });

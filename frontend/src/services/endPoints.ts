@@ -19,6 +19,7 @@ const endPoints = {
 
   //order
   order: "/order/",
+  getOrderByUserId: "/order/user/",
 
   //khalti
   khaltiInitiate: "/payment/initiateKhalti",

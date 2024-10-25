@@ -77,7 +77,16 @@ const TopNav = () => {
           <div className="relative">
             {isLoggedIn &&
               (cartLoading ? (
-                <ClipLoader size={15} />
+                <ClipLoader
+                  size={15}
+                  className={`hover:cursor-pointer ${
+                    pathname === "/"
+                      ? isScrolled
+                        ? "text-black"
+                        : "text-white"
+                      : "text-black"
+                  }`}
+                />
               ) : (
                 <Link
                   href={routes.cart}

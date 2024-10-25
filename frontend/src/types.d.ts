@@ -66,11 +66,13 @@ interface PaymentDetails {
 interface Order {
   _id?: string;
   artworks: string[];
+  user?: User;
   status?: string;
   totalPrice: number;
   shippingAddress: string;
   phoneNumber: string;
   paymentDetails?: PaymentDetails;
+  createdAt?: string;
 }
 
 interface CustomerInfo {

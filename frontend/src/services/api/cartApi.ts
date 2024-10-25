@@ -48,6 +48,7 @@ export const useGetCart = () => {
         return response.data?.data || {};
       } catch (error: unknown) {
         requestError(error as AxiosError<ApiResponse, unknown>);
+        return { items: [] };
       }
     },
     enabled: auth.isLoggedIn,

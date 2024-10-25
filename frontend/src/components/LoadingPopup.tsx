@@ -1,0 +1,37 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
+
+export default function LoadingPopup({
+  isLoading = false,
+  message = "Loading...",
+}: {
+  isLoading?: boolean;
+  message?: string;
+}) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(isLoading);
+  }, [isLoading]);
+
+  if (!show) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
+      aria-live="assertive"
+      role="alert"
+    >
+      <div className="rounded-lg bg-card p-6 shadow-lg">
+        <div className="flex flex-col items-center space-y-2">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-center text-sm font-medium text-muted-foreground">
+            {message}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

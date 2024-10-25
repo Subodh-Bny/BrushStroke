@@ -5,14 +5,16 @@ import {
   getOrderById,
   updateOrder,
   deleteOrder,
+  getOrderByUserId,
 } from "../controllers/order.controller";
 import protectRoute from "../middleware/protectRoute";
 
 const router = express.Router();
 
 router.post("/", protectRoute, createOrder);
-router.get("/", getAllOrders);
-router.get("/:id", getOrderById);
+router.get("/", protectRoute, getAllOrders);
+router.get("/:id", protectRoute, getOrderById);
+router.get("/user/:userId", protectRoute, getOrderByUserId);
 router.put("/:id", protectRoute, updateOrder);
 router.delete("/:id", protectRoute, deleteOrder);
 

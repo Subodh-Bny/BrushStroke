@@ -9,71 +9,31 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  ChevronLeft,
-  ChevronRight,
-  MoreHorizontal,
-  Search,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { useGetOrders } from "@/services/api/orderApi";
+import OrdersTable from "@/components/OrdersTable";
 
 // Mock data for orders
-const orders = [
-  {
-    id: "1",
-    customer: "John Doe",
-    date: "2023-06-01",
-    total: "$129.99",
-    status: "Completed",
-  },
-  {
-    id: "2",
-    customer: "Jane Smith",
-    date: "2023-06-02",
-    total: "$79.99",
-    status: "Processing",
-  },
-  {
-    id: "3",
-    customer: "Bob Johnson",
-    date: "2023-06-03",
-    total: "$199.99",
-    status: "Shipped",
-  },
-  {
-    id: "4",
-    customer: "Alice Brown",
-    date: "2023-06-04",
-    total: "$59.99",
-    status: "Pending",
-  },
-  {
-    id: "5",
-    customer: "Charlie Davis",
-    date: "2023-06-05",
-    total: "$149.99",
-    status: "Completed",
-  },
-];
 
 const OrderPage = () => {
+  const { data: orderData } = useGetOrders();
+
+  const completedOrders = orderData?.reduce(
+    (acc, order) => (order.status === "Delivered" ? acc + 1 : acc),
+    0
+  );
+
+  const pendingOrders = orderData?.reduce(
+    (acc, order) => (order.status === "Pending" ? acc + 1 : acc),
+    0
+  );
+
+  const totalValue =
+    orderData?.reduce((acc, order) => acc + order.totalPrice, 0) || 0;
+  const orderCount = orderData?.length || 0;
+  const averageOrderValue = orderCount > 0 ? totalValue / orderCount : 0;
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-6">Orders</h1>
@@ -104,64 +64,14 @@ const OrderPage = () => {
             </div>
             <Button>Add New Order</Button>
           </div>
-
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Order ID</TableHead>
-                <TableHead>Customer</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {orders.map((order) => (
-                <TableRow key={order.id}>
-                  <TableCell>{order.id}</TableCell>
-                  <TableCell>{order.customer}</TableCell>
-                  <TableCell>{order.date}</TableCell>
-                  <TableCell>{order.total}</TableCell>
-                  <TableCell>
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        order.status === "Completed"
-                          ? "bg-green-100 text-green-800"
-                          : order.status === "Processing"
-                          ? "bg-blue-100 text-blue-800"
-                          : order.status === "Shipped"
-                          ? "bg-purple-100 text-purple-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View details</DropdownMenuItem>
-                        <DropdownMenuItem>Update status</DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>Cancel order</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <OrdersTable adminPage={true} orders={orderData ? orderData : []} />
 
           <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-gray-500">Showing 5 of 100 orders</p>
+            <p className="text-sm text-gray-500">
+              Showing{" "}
+              {orderData && (orderData?.length > 5 ? "5" : orderData?.length)}{" "}
+              of {orderData?.length} orders
+            </p>
             <div className="flex items-center space-x-2">
               <Button variant="outline" size="sm">
                 <ChevronLeft className="h-4 w-4 mr-2" />
@@ -185,21 +95,29 @@ const OrderPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-blue-100 p-4 rounded-lg">
               <h3 className="font-semibold text-blue-800">Total Orders</h3>
-              <p className="text-2xl font-bold text-blue-900">1,234</p>
+              <p className="text-2xl font-bold text-blue-900">
+                {orderData?.length || "0"}
+              </p>
             </div>
             <div className="bg-green-100 p-4 rounded-lg">
               <h3 className="font-semibold text-green-800">Completed Orders</h3>
-              <p className="text-2xl font-bold text-green-900">1,089</p>
+              <p className="text-2xl font-bold text-green-900">
+                {completedOrders}
+              </p>
             </div>
             <div className="bg-yellow-100 p-4 rounded-lg">
               <h3 className="font-semibold text-yellow-800">Pending Orders</h3>
-              <p className="text-2xl font-bold text-yellow-900">145</p>
+              <p className="text-2xl font-bold text-yellow-900">
+                {pendingOrders}
+              </p>
             </div>
             <div className="bg-purple-100 p-4 rounded-lg">
               <h3 className="font-semibold text-purple-800">
                 Average Order Value
               </h3>
-              <p className="text-2xl font-bold text-purple-900">$85.50</p>
+              <p className="text-2xl font-bold text-purple-900">
+                Rs {averageOrderValue.toFixed(2)}
+              </p>
             </div>
           </div>
         </CardContent>

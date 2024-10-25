@@ -81,14 +81,13 @@ export const verifyKhaltiPaymentAndUpdateOrder = async (
     const updatedOrder = await Order.findByIdAndUpdate(
       purchase_order_id,
       {
-        status: paymentDetails?.status || "Failed",
         paymentDetails: paymentDetails,
       },
       { new: true }
     );
 
     const updateCart = await Cart.findOneAndUpdate(
-      { userId: updatedOrder?.userId },
+      { userId: updatedOrder?.user },
       { $set: { items: [] } },
       { new: true }
     );

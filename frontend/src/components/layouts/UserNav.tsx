@@ -9,16 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  User,
-  Settings,
-  HelpCircle,
-  LogOut,
-  LayoutDashboard,
-} from "lucide-react";
+import { User, Settings, LogOut, LayoutDashboard } from "lucide-react";
 import { AuthContext } from "@/context/AuthContext";
 import routes from "@/config/routes";
 import { useRouter } from "next/navigation";
+import { StackIcon } from "@radix-ui/react-icons";
 
 const UserNav = ({
   isScrolled,
@@ -86,9 +81,12 @@ const UserNav = ({
             <Settings className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer">
-            <HelpCircle className="mr-2 h-4 w-4" />
-            <span>Help & Support</span>
+          <DropdownMenuItem
+            className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer"
+            onClick={() => router.push(routes.orders)}
+          >
+            <StackIcon className="mr-2 h-4 w-4" />
+            <span>Your orders</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem

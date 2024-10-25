@@ -86,7 +86,7 @@ export default function Artworks({
                     <p className="text-sm mb-1">
                       by {artwork.artist && artwork?.artist.username}
                     </p>
-                    <p className="text-lg font-bold mb-2">${artwork.price}</p>
+                    <p className="text-lg font-bold mb-2">Rs {artwork.price}</p>
                     <Button
                       onClick={(e) => {
                         e.stopPropagation();

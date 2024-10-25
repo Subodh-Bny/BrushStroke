@@ -4,6 +4,7 @@ const routes = {
   artworks: "/artworks",
   artworkByCategoryId: "/artworks/category/",
   cart: "/cart",
+  orders: "/orders",
   admin: {
     dashboard: "/admin",
     artworks: { add: "/admin/artwork/add", view: "/admin/artwork/" },
