@@ -51,7 +51,8 @@ interface CartItem {
   quantity: number;
 }
 interface Cart {
-  usreId: string;
+  _id?: string;
+  userId: string;
   items: CartItem[];
 }
 
@@ -65,6 +66,7 @@ interface PaymentDetails {
 }
 interface Order {
   _id?: string;
+  cartId?: string;
   artworks: string[];
   user?: User;
   status?: string;
@@ -75,6 +77,10 @@ interface Order {
   createdAt?: string;
 }
 
+interface OrderData {
+  user: User;
+  order: Order;
+}
 interface CustomerInfo {
   name: string;
   email: string;

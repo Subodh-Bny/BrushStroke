@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { ShoppingCart, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -24,22 +24,22 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  useCreateOrderKhalti,
-  useCreateOrderEsewa,
-} from "@/services/api/orderApi";
+import { useCreateOrderEsewa } from "@/services/api/orderApi";
 import ClipLoader from "react-spinners/ClipLoader";
-import Cookies from "js-cookie";
 import routes from "@/config/routes";
 import { useCreateSignature } from "@/services/api/payment/esewaApi";
 import toast from "react-hot-toast";
 import LoadingPopup from "@/components/LoadingPopup";
+import { AuthContext } from "@/context/AuthContext";
+import { useInitiateKhalti } from "@/services/api/payment/khaltiApi";
 
 export default function CartPage() {
-  const cartItems = useAppSelector((state) => state.cart);
+  const cart = useAppSelector((state) => state?.cart);
+  const { user } = useContext(AuthContext);
+
   const { mutate: removeItem } = useRemoveCartItem();
-  const { mutate: createKhalitOrder, isPending: createKhaltiOrderPending } =
-    useCreateOrderKhalti();
+  const { mutate: initiateKhalti, isPending: initiateKhaltiPending } =
+    useInitiateKhalti();
   const { mutate: createEsewaOrder, isPending: createEsewaOrderPending } =
     useCreateOrderEsewa();
   const [signature, setSignature] = useState<string>("");
@@ -54,11 +54,14 @@ export default function CartPage() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const subtotal = useAppSelector((state) =>
-    state.cart.reduce((sum, item) => sum + (item?.artwork?.price || 0), 0)
+    state?.cart?.items.reduce(
+      (sum, item) => sum + (item?.artwork?.price || 0),
+      0
+    )
   );
 
   const shipping = 0;
-  const items = cartItems || [];
+  const items = cart?.items || [];
   const total = subtotal > 0 ? subtotal + shipping : 0;
 
   const handleRemoveItem = (artworkId: string) => {
@@ -66,7 +69,6 @@ export default function CartPage() {
   };
 
   const handleCheckout = () => {
-    const user: User = JSON.parse(Cookies.get("user") || "");
     if (user) {
       setShippingDetails({
         shippingAddress: user?.shippingAddress || "",
@@ -151,13 +153,14 @@ export default function CartPage() {
       .filter((id): id is string => id !== undefined);
 
     const orderData = {
+      cartId: cart?._id,
       artworks,
       totalPrice: total,
       shippingAddress: shippingDetails.shippingAddress,
       phoneNumber: shippingDetails.phoneNumber,
     };
 
-    createKhalitOrder(orderData);
+    initiateKhalti({ data: orderData, user: user });
     setIsCheckoutOpen(false);
   };
 
@@ -284,11 +287,11 @@ export default function CartPage() {
               disabled={
                 (phoneError || shippingDetails.phoneNumber === ""
                   ? true
-                  : false) || createKhaltiOrderPending
+                  : false) || initiateKhaltiPending
               }
               className="bg-indigo-600 hover:bg-indigo-700"
             >
-              {createKhaltiOrderPending ? (
+              {initiateKhaltiPending ? (
                 <ClipLoader size={15} />
               ) : (
                 "Pay with khalti"
@@ -360,7 +363,7 @@ export default function CartPage() {
         </DialogContent>
       </Dialog>
 
-      <LoadingPopup isLoading={createKhaltiOrderPending} />
+      <LoadingPopup isLoading={initiateKhaltiPending} />
     </Container>
   );
 }

@@ -44,7 +44,7 @@ export const useGetCart = () => {
         const response: AxiosResponse<QueryResponse<Cart>> =
           await axiosInstance.get<ApiResponse>(endPoints.cart);
         // console.log(response.data);
-        dispatch(setCart(response.data?.data?.items || []));
+        dispatch(setCart(response.data?.data || { userId: "", items: [] }));
         return response.data?.data || {};
       } catch (error: unknown) {
         requestError(error as AxiosError<ApiResponse, unknown>);

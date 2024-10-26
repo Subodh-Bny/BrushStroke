@@ -1,28 +1,33 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: CartItem[] = [];
+const initialState: Cart = { userId: "", items: [] };
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<Artwork>) {
-      const itemExists = state.find(
+      const itemExists = state.items.find(
         (item) => item.artwork._id === action.payload._id
       );
 
       if (!itemExists) {
-        state.push({ artwork: action.payload, quantity: 1 });
+        state.items.push({ artwork: action.payload, quantity: 1 });
       }
     },
     // action to initialize cart with fetched data
-    setCart(state, action: PayloadAction<CartItem[]>) {
+    setCart(state, action: PayloadAction<Cart>) {
       return action.payload; // Replacing the state with the fetched cart items
     },
 
     //remove item
     removeItem(state, action: PayloadAction<string>) {
-      return state.filter((item) => item.artwork._id !== action.payload);
+      return {
+        ...state,
+        items: state.items.filter(
+          (item) => item.artwork._id !== action.payload
+        ),
+      };
     },
   },
 });
