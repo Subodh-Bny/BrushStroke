@@ -54,7 +54,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Orders fetched successfully",
-     data: orders,
+      data: orders,
     });
   } catch (error: any) {
     console.log("Error in getAllOrders controller", error.message);

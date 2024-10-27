@@ -3,7 +3,6 @@ import { createHmac } from "crypto";
 import axios from "axios";
 import Order from "../models/order.model";
 import Cart from "../models/cart.model";
-import { CustomRequest } from "./cart.controller";
 
 export const initiateKhaltiPayment = async (req: Request, res: Response) => {
   try {
@@ -73,33 +72,40 @@ export const verifyKhaltiPaymentAndUpdateOrder = async (
   res: Response
 ) => {
   try {
-    const { pidx, purchase_order_id, userId } = req.body;
+    const { pidx, purchase_order_id } = req.body;
 
     const paymentDetails = await verifyKhaltiPayment(pidx);
 
     console.log(paymentDetails);
 
-    if (userId) {
-      const updateCart = await Cart.findOneAndUpdate(
-        { userId },
-        { $set: { items: [] } },
-        { new: true }
-      );
-    } else {
-      return res
-        .status(400)
-        .json({ message: "User not found", userId: userId });
+    const updatedOrder = await Order.findByIdAndUpdate(
+      purchase_order_id,
+      {
+        paymentDetails: paymentDetails,
+      },
+      { new: true }
+    );
+
+    const updateCart = await Cart.findOneAndUpdate(
+      { userId: updatedOrder?.user },
+      { $set: { items: [] } },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: "Order not found" });
     }
 
     return res.status(200).json({
       message: "Payment verified, order status updated successfully",
+      order: updatedOrder,
     });
   } catch (error: any) {
     console.log(
       "Error in verifyPaymentAndUpdateOrder controller",
       error.message
     );
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
