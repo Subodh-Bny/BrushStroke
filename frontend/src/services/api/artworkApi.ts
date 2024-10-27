@@ -89,3 +89,20 @@ export const useUpdateArtwork = () => {
     },
   });
 };
+
+export const useDeleteArtwork = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["artworks"],
+    mutationFn: async (id: string) => {
+      try {
+        const response: AxiosResponse<QueryResponse> =
+          await axiosInstance.delete(endPoints.artwork + id);
+        toast.success(response.data?.message);
+        queryClient.invalidateQueries({ queryKey: ["artworks"] });
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse>);
+      }
+    },
+  });
+};

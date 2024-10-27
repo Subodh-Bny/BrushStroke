@@ -38,6 +38,7 @@ import {
 import toast from "react-hot-toast";
 import Image from "next/image";
 import axios from "axios";
+import LoadingPopup from "@/components/LoadingPopup";
 
 const AddArtwork = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -85,9 +86,13 @@ const AddArtwork = () => {
     }
   };
 
+  const [addArtworkLoading, setAddArtworkLoading] = useState<boolean>(false);
   const artworkCreateHandler: SubmitHandler<Artwork> = async (data) => {
+    setAddArtworkLoading(true);
     if (data.category === "" || data.category === undefined) {
       setCategoryError("Select category");
+      setAddArtworkLoading(false);
+
       return;
     }
     const formData = new FormData();
@@ -113,11 +118,14 @@ const AddArtwork = () => {
         data.image = imageUrl;
         addArtworkMutate(data);
         setImagePreviewUrl(null);
+        setAddArtworkLoading(false);
       } catch (error) {
         toast.error("Failed to upload image. Please try again.");
+        setAddArtworkLoading(false);
       }
     } else {
       toast.error("Please upload image");
+      setAddArtworkLoading(false);
     }
   };
 
@@ -337,6 +345,10 @@ const AddArtwork = () => {
           </form>
         </CardContent>
       </Card>
+      <LoadingPopup
+        isLoading={addArtworkLoading}
+        message="Creating artwork..."
+      />
     </section>
   );
 };

@@ -154,7 +154,9 @@ export default function UpdateArtworkModal({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-red-500 hover:bg-red-600">Update Artwork</Button>
+        <Button className="bg-white hover:bg-gray-200 text-black">
+          Update Artwork
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
