@@ -32,7 +32,7 @@ interface User {
 interface Artwork {
   _id?: string;
   title: string;
-  artist: User;
+  artist: User | string;
   price: number;
   category: string;
   image: string | undefined;

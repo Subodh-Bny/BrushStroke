@@ -38,6 +38,8 @@ import {
 import toast from "react-hot-toast";
 import Image from "next/image";
 import axios from "axios";
+import LoadingPopup from "@/components/LoadingPopup";
+import ArtistsSelect from "../ArtistsSelect";
 
 const AddArtwork = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -46,6 +48,7 @@ const AddArtwork = () => {
   const [categoryError, setCategoryError] = useState<string | undefined>(
     undefined
   );
+  const [artistError, setArtistError] = useState<string | undefined>(undefined);
 
   const { data: categoriesData } = useGetCategories();
   useEffect(() => {
@@ -85,11 +88,23 @@ const AddArtwork = () => {
     }
   };
 
+  const [addArtworkLoading, setAddArtworkLoading] = useState<boolean>(false);
   const artworkCreateHandler: SubmitHandler<Artwork> = async (data) => {
+    setAddArtworkLoading(true);
     if (data.category === "" || data.category === undefined) {
       setCategoryError("Select category");
+      setAddArtworkLoading(false);
       return;
     }
+    if (data.artist === "" || data.artist === undefined) {
+      setArtistError("Select artist");
+      setAddArtworkLoading(false);
+      return;
+    }
+
+    setCategoryError(undefined);
+    setArtistError(undefined);
+
     const formData = new FormData();
 
     if (data?.image && data.image.length > 0) {
@@ -113,11 +128,14 @@ const AddArtwork = () => {
         data.image = imageUrl;
         addArtworkMutate(data);
         setImagePreviewUrl(null);
+        setAddArtworkLoading(false);
       } catch (error) {
         toast.error("Failed to upload image. Please try again.");
+        setAddArtworkLoading(false);
       }
     } else {
       toast.error("Please upload image");
+      setAddArtworkLoading(false);
     }
   };
 
@@ -321,6 +339,15 @@ const AddArtwork = () => {
                 <Switch id="featured" />
                 <Label htmlFor="featured">Featured Artwork</Label>
               </div> */}
+              <div className="grid gap-2">
+                <Label htmlFor="artist">
+                  Artist <span className="text-red-500">*</span>
+                </Label>
+                <ArtistsSelect setValue={setValue} />
+                {artistError && (
+                  <span className="text-red-500">{artistError}</span>
+                )}
+              </div>
 
               <div className="flex items-center gap-2">
                 <Switch
@@ -337,6 +364,10 @@ const AddArtwork = () => {
           </form>
         </CardContent>
       </Card>
+      <LoadingPopup
+        isLoading={addArtworkLoading}
+        message="Creating artwork..."
+      />
     </section>
   );
 };

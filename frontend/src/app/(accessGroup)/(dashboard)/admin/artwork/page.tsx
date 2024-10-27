@@ -3,17 +3,34 @@ import Container from "@/components/Container";
 import Header from "@/components/SectionHeading";
 import { Card, CardContent } from "@/components/ui/card";
 import routes from "@/config/routes";
-import { useGetArtworks, useUpdateArtwork } from "@/services/api/artworkApi";
+import {
+  useDeleteArtwork,
+  useGetArtworks,
+  useUpdateArtwork,
+} from "@/services/api/artworkApi";
 import { PlusCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import ClipLoader from "react-spinners/ClipLoader";
+import { X } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import UpdateArtworkModal from "./UpdateArtwork";
 
 const ArtworksPage = () => {
   const { data: artworks, isLoading, isError } = useGetArtworks();
   const { mutate: updateMutate } = useUpdateArtwork();
+  const { mutate: deleteMutate } = useDeleteArtwork();
 
   if (isLoading) {
     return (
@@ -31,6 +48,10 @@ const ArtworksPage = () => {
 
   const handleArtworkUpdate = (artwork: Partial<Artwork>) => {
     updateMutate(artwork);
+  };
+
+  const handleDeleteArtwork = (id: string) => {
+    deleteMutate(id);
   };
 
   return (
@@ -64,6 +85,37 @@ const ArtworksPage = () => {
             }}
           >
             <div className="relative w-full h-full">
+              <AlertDialog>
+                <AlertDialogTrigger>
+                  <X
+                    size={20}
+                    className="absolute z-50 right-1 top-1  text-white font-bold transition-opacity duration-300 opacity-0 group-hover:opacity-100 "
+                  />
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Are you absolutely sure?
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      the artwork.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => {
+                        handleDeleteArtwork(artwork?._id || "");
+                      }}
+                      className="bg-red-500 hover:bg-red-600"
+                    >
+                      Continue
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
               <Image
                 src={artwork.image || "/notFound.jpg"}
                 alt={artwork.title}
@@ -76,7 +128,11 @@ const ArtworksPage = () => {
                 <div className="group-hover:opacity-100 opacity-0 ">
                   <h2 className="text-2xl font-bold mb-1">{artwork.title}</h2>
                   <p className="text-sm mb-1">
-                    by {artwork.artist && artwork.artist.username}
+                    by{" "}
+                    {typeof artwork.artist === "object" &&
+                    "username" in artwork.artist
+                      ? artwork.artist.username
+                      : ""}
                   </p>
                   <p className="text-lg font-bold mb-2">${artwork.price}</p>
                   <UpdateArtworkModal
