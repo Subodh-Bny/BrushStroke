@@ -128,7 +128,11 @@ const ArtworksPage = () => {
                 <div className="group-hover:opacity-100 opacity-0 ">
                   <h2 className="text-2xl font-bold mb-1">{artwork.title}</h2>
                   <p className="text-sm mb-1">
-                    by {artwork.artist && artwork.artist.username}
+                    by{" "}
+                    {typeof artwork.artist === "object" &&
+                    "username" in artwork.artist
+                      ? artwork.artist.username
+                      : ""}
                   </p>
                   <p className="text-lg font-bold mb-2">${artwork.price}</p>
                   <UpdateArtworkModal

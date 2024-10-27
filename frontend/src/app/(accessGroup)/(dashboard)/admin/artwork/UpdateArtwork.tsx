@@ -27,6 +27,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
+import ArtistsSelect from "./ArtistsSelect";
 
 export default function UpdateArtworkModal({
   artwork,
@@ -41,6 +42,8 @@ export default function UpdateArtworkModal({
   const [categoryError, setCategoryError] = useState<string | undefined>(
     undefined
   );
+  const [artistError, setArtistError] = useState<string | undefined>(undefined);
+
   const {
     register,
     handleSubmit,
@@ -78,6 +81,15 @@ export default function UpdateArtworkModal({
 
       return;
     }
+
+    if (data.artist === "" || data.artist === undefined) {
+      setArtistError("Select artist");
+      return;
+    }
+
+    setCategoryError(undefined);
+    setArtistError(undefined);
+
     setIsLoading(true);
     const formData = new FormData();
     const updatedData: Partial<Artwork> = {};
@@ -118,9 +130,15 @@ export default function UpdateArtworkModal({
     if (originalArtwork.title !== data.title) {
       updatedData.title = data.title;
     }
-    if (originalArtwork.artist !== data.artist) {
+
+    if (
+      !originalArtwork.artist ||
+      (typeof originalArtwork.artist === "object" &&
+        originalArtwork.artist._id?.toString() !== data.artist)
+    ) {
       updatedData.artist = data.artist;
     }
+
     if (originalArtwork.price !== data.price) {
       updatedData.price = data.price;
     }
@@ -269,6 +287,16 @@ export default function UpdateArtworkModal({
                 <Switch id="featured" />
                 <Label htmlFor="featured">Featured Artwork</Label>
               </div> */}
+
+            <div className="grid gap-2">
+              <Label htmlFor="artist">
+                Artist <span className="text-red-500">*</span>
+              </Label>
+              <ArtistsSelect setValue={setValue} />
+              {artistError && (
+                <span className="text-red-500">{artistError}</span>
+              )}
+            </div>
 
             <div className="flex items-center gap-2">
               <Switch

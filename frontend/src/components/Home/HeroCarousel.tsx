@@ -35,8 +35,6 @@ export default function HeroArtworkCarousel() {
 
   const { data: artworks } = useGetArtworks();
 
-  console.log(artworks);
-
   const artworksData: Artwork[] = [
     {
       image: "/hero1.jpg",
@@ -154,10 +152,12 @@ export default function HeroArtworkCarousel() {
               : artworksData[currentIndex].title}
           </h2>
           <p className="text-lg md:text-xl mb-2">
-            by
-            {artworks && artworks.length > 0
-              ? artworks[currentIndex]?.artist?.username
-              : artworksData[currentIndex].artist}
+            by&nbsp;
+            {artworks &&
+              artworks.length > 0 &&
+              typeof artworks[currentIndex]?.artist === "object" &&
+              "username" in artworks[currentIndex]?.artist &&
+              artworks[currentIndex]?.artist.username}
           </p>
           <p className="text-sm md:text-base mb-4">
             {artworks && artworks.length > 0
@@ -166,7 +166,7 @@ export default function HeroArtworkCarousel() {
           </p>
           <div className="flex items-center justify-between gap-2">
             <span className="text-xl md:text-2xl font-bold">
-              Rs
+              Rs&nbsp;
               {artworks && artworks.length > 0
                 ? artworks[currentIndex].price
                 : artworksData[currentIndex].price}

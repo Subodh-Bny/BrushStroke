@@ -4,6 +4,9 @@ const endPoints = {
   login: "/auth/login",
   logout: "/auth/logout",
 
+  //user
+  getArtists: "/user/artists",
+
   //category
   getAllCategories: "/category",
   createCategory: "/category/create",
