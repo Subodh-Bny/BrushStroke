@@ -64,6 +64,7 @@ interface PaymentDetails {
   transaction_id: string;
   fee: number;
   refunded: boolean;
+  orderId?: string;
 }
 interface Order {
   _id?: string;

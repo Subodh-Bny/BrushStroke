@@ -110,19 +110,21 @@ export default function HeroArtworkCarousel() {
       >
         <CarouselContent>
           {artworks && artworks.length > 0
-            ? artworks.map((artwork, index) => (
-                <CarouselItem key={index}>
-                  <div className="relative h-[600px] md:h-screen">
-                    <Image
-                      src={artwork.image || "noImage.jpg"}
-                      alt={`Artwork: ${artwork.title} by ${artwork.artist}`}
-                      fill
-                      sizes="100vw"
-                      className="object-cover"
-                    />
-                  </div>
-                </CarouselItem>
-              ))
+            ? artworks.map((artwork, index) => {
+                return (
+                  <CarouselItem key={index}>
+                    <div className="relative h-[600px] md:h-screen">
+                      <Image
+                        src={artwork.image || "noImage.jpg"}
+                        alt={`Artwork: ${artwork.title} by ${artwork.artist}`}
+                        fill
+                        sizes="100vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  </CarouselItem>
+                );
+              })
             : artworksData.map((artwork, index) => (
                 <CarouselItem key={index}>
                   <div className="relative h-[600px] md:h-screen">

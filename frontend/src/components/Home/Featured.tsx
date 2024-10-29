@@ -11,7 +11,6 @@ import routes from "@/config/routes";
 const Featured = () => {
   const { data: featuredArtwork, isLoading: featuredArtworkLoading } =
     useGetFeaturedArtwork();
-  console.log(featuredArtwork);
   const router = useRouter();
   return (
     <Container>

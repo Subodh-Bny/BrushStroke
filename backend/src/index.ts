@@ -12,6 +12,7 @@ import artworkRoutes from "./routes/artwork.routes";
 import orderRoutes from "./routes/order.routes";
 import paymentRoutes from "./routes/payment.routes";
 import cartRoutes from "./routes/cart.routes";
+import analyticsRoutes from "./routes/analytics.routes";
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.use("/api/artwork", artworkRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 app.listen(port, () => {
   connectToMongoDB();

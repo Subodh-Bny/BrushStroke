@@ -96,9 +96,12 @@ export default function Artworks({
                         e.stopPropagation();
                         artwork && handleAddToCart(artwork);
                       }}
+                      disabled={!artwork.availability}
                       className="w-full bg-white text-black hover:bg-gray-200"
                     >
-                      Add to Cart
+                      {!artwork.availability
+                        ? "Artwork not available"
+                        : "Add to Cart"}
                     </Button>
                   </div>
                 </CardContent>

@@ -8,5 +8,5 @@ export const internalError = (
   console.log(consoleError, error.message);
   return res
     .status(500)
-    .json({ message: "Internal server error", error: error.message });
+    .json({ message: "Internal server error", error: error });
 };

@@ -23,14 +23,20 @@ import { UseFormSetValue } from "react-hook-form";
 
 const ArtistsSelect = ({
   setValue,
+  updateArtist,
 }: {
   setValue: UseFormSetValue<Artwork>;
+  updateArtist?: User;
 }) => {
   const [open, setOpen] = React.useState<boolean>(false);
   const [inputValue, setInputValue] = React.useState<string>("");
 
   const { data: artists } = useGetArtists();
   //   console.log(artists);
+
+  React.useEffect(() => {
+    updateArtist && setInputValue(updateArtist.username);
+  }, [updateArtist]);
   return (
     <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger asChild>
@@ -43,15 +49,15 @@ const ArtistsSelect = ({
           {inputValue
             ? artists?.find((artist) => artist.username === inputValue)
                 ?.username
-            : "Select framework..."}
+            : "Select Artist..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[400px] max-h-72 p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search Artist..." />
           <CommandList>
-            <CommandEmpty>No framework found.</CommandEmpty>
+            <CommandEmpty>No artists found.</CommandEmpty>
             <CommandGroup>
               {artists?.map((artist) => (
                 <CommandItem

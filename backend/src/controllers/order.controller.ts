@@ -3,6 +3,8 @@ import Order from "../models/order.model";
 import { CustomRequest } from "./cart.controller";
 import User from "../models/user.model";
 import { internalError } from "./controllerError";
+import Artwork from "../models/artwork.model";
+import Cart from "../models/cart.model";
 
 export const createOrder = async (req: CustomRequest, res: Response) => {
   try {
@@ -11,13 +13,31 @@ export const createOrder = async (req: CustomRequest, res: Response) => {
       const { artworks, status, totalPrice, shippingAddress, phoneNumber } =
         req.body;
 
+      const notAvailable = await Artwork.findOne({
+        availability: false,
+        _id: { $in: artworks },
+      });
+
+      if (notAvailable) {
+        return res.status(404).json({
+          message: `The artwork ${notAvailable.title} is currently unavailable. Please check back later.`,
+        });
+      }
+
       const newOrder = new Order({
         user: userId,
         artworks,
         paymentDetails: { status },
-
         totalPrice,
       });
+
+      const updatedArtwork = await Artwork.updateMany(
+        {
+          _id: { $in: artworks },
+        },
+        { $set: { availability: false } }
+      );
+
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
@@ -32,6 +52,12 @@ export const createOrder = async (req: CustomRequest, res: Response) => {
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
+
+      const updateCart = await Cart.findOneAndUpdate(
+        { userId },
+        { $set: { items: [] } },
+        { new: true }
+      );
 
       await newOrder.save();
 

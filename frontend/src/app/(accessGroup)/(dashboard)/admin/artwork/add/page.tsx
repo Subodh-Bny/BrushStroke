@@ -351,13 +351,15 @@ const AddArtwork = () => {
 
               <div className="flex items-center gap-2">
                 <Switch
-                  id="active"
+                  id="available"
                   defaultChecked
                   onCheckedChange={(value) => {
                     setValue("availability", value);
                   }}
                 />
-                <Label htmlFor="active">Active (visible in store)</Label>
+                <Label htmlFor="available">
+                  Availability (visible in store)
+                </Label>
               </div>
             </div>
             <Button className="mt-6">Add Artwork</Button>

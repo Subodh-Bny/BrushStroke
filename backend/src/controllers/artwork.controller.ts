@@ -121,7 +121,8 @@ export const getArtworkById = async (req: Request, res: Response) => {
 export const updateArtwork = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const { title, description, price, image, category, artist } = req.body;
+    const { title, description, price, image, category, artist, availability } =
+      req.body;
 
     if (category) {
       if (!mongoose.Types.ObjectId.isValid(category)) {
@@ -152,6 +153,9 @@ export const updateArtwork = async (req: Request, res: Response) => {
     if (image) updateFields.image = image;
     if (category) updateFields.category = category;
     if (artist) updateFields.artist = artist;
+    if (typeof availability === "boolean") {
+      updateFields.availability = availability;
+    }
 
     const updatedArtwork = await Artwork.findByIdAndUpdate(
       id,

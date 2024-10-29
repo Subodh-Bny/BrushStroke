@@ -31,6 +31,12 @@ const endPoints = {
 
   //esewa
   generateSignature: "/payment/generate-esewa-signature",
+
+  //payment details
+  getPaymentDetails: "/payment/details",
+
+  //analytics
+  analytics: "/analytics/",
 };
 
 export default endPoints;
