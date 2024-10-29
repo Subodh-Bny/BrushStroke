@@ -18,10 +18,10 @@ dotenv.config();
 const app: Express = express();
 
 const port = process.env.PORT || 5000;
-
+//, "https://test-pay.khalti.com"
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://test-pay.khalti.com"],
+    origin: ["http://localhost:3000"],
     credentials: true,
   })
 );

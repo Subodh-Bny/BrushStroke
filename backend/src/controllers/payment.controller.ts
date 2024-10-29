@@ -3,6 +3,7 @@ import { createHmac } from "crypto";
 import axios from "axios";
 import Order from "../models/order.model";
 import Cart from "../models/cart.model";
+import { internalError } from "./controllerError";
 
 export const initiateKhaltiPayment = async (req: Request, res: Response) => {
   try {
@@ -38,10 +39,7 @@ export const initiateKhaltiPayment = async (req: Request, res: Response) => {
     // console.log(response);
     res.json(response.data);
   } catch (error) {
-    console.error("Error initiating payment:");
-    res
-      .status(500)
-      .json({ message: "Failed to initiate payment", error: req.body });
+    internalError("Error initiating payment", error, res);
   }
 };
 
@@ -101,11 +99,11 @@ export const verifyKhaltiPaymentAndUpdateOrder = async (
       order: updatedOrder,
     });
   } catch (error: any) {
-    console.log(
+    internalError(
       "Error in verifyPaymentAndUpdateOrder controller",
-      error.message
+      error,
+      res
     );
-    return res.status(500).json({ error: "Internal server error" });
   }
 };
 

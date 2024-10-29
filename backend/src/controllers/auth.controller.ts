@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
 import User from "../models/user.model";
 import generateTokenAndCookie from "../utils/generateToken";
+import { internalError } from "./controllerError";
 
 export const signup = async (req: Request, res: Response) => {
   try {
@@ -49,7 +50,6 @@ export const signup = async (req: Request, res: Response) => {
       },
     });
   } catch (error: any) {
-    console.error("Error in signup controller:", error.message);
     if (error.code === 11000) {
       const field = Object.keys(error.keyValue)[0];
       const value = error.keyValue[field];
@@ -59,10 +59,7 @@ export const signup = async (req: Request, res: Response) => {
         message: `The ${field} is already in use. Please choose a different one.`,
       });
     }
-    return res.status(500).json({
-      error: "Internal server error",
-      message: error.message,
-    });
+    internalError("Error in  signup  controller", error, res);
   }
 };
 
@@ -95,11 +92,7 @@ export const login = async (req: Request, res: Response) => {
       token,
     });
   } catch (error: any) {
-    console.log("Error in login controller", error.message);
-
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    internalError("Error in  login  controller", error, res);
   }
 };
 

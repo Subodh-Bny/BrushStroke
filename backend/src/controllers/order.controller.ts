@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Order from "../models/order.model";
 import { CustomRequest } from "./cart.controller";
 import User from "../models/user.model";
+import { internalError } from "./controllerError";
 
 export const createOrder = async (req: CustomRequest, res: Response) => {
   try {
@@ -43,8 +44,7 @@ export const createOrder = async (req: CustomRequest, res: Response) => {
       });
     }
   } catch (error: any) {
-    console.log("Error in createOrder controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in createOrder controller", error, res);
   }
 };
 
@@ -57,8 +57,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
       data: orders,
     });
   } catch (error: any) {
-    console.log("Error in getAllOrders controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in getAllOrders controller", error, res);
   }
 };
 
@@ -77,8 +76,7 @@ export const getOrderById = async (req: Request, res: Response) => {
       data: order,
     });
   } catch (error: any) {
-    console.log("Error in getOrderById controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in getOrderById controller", error, res);
   }
 };
 
@@ -99,8 +97,7 @@ export const getOrderByUserId = async (req: CustomRequest, res: Response) => {
       data: order,
     });
   } catch (error: any) {
-    console.log("Error in getOrderByUserId controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in getOrderByUserId controller", error, res);
   }
 };
 
@@ -122,8 +119,7 @@ export const updateOrder = async (req: Request, res: Response) => {
       order: updatedOrder,
     });
   } catch (error: any) {
-    console.log("Error in updateOrder controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in updateOrder controller", error, res);
   }
 };
 
@@ -141,7 +137,6 @@ export const deleteOrder = async (req: Request, res: Response) => {
       message: "Order deleted successfully",
     });
   } catch (error: any) {
-    console.log("Error in deleteOrder controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in deleteOrder controller", error, res);
   }
 };

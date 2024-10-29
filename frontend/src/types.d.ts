@@ -38,6 +38,7 @@ interface Artwork {
   image: string | undefined;
   description?: string;
   availability: boolean;
+  isFeatured?: boolean;
 }
 
 interface Category {

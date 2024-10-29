@@ -16,6 +16,7 @@ const endPoints = {
   //artwork
   artwork: "/artwork/",
   getArtworkByCategory: "/artwork/category?categoryId=",
+  featuredArtwork: "/artwork/featured/",
 
   //cart
   cart: "/cart/",

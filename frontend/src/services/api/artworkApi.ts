@@ -106,3 +106,58 @@ export const useDeleteArtwork = () => {
     },
   });
 };
+
+export const useGetFeaturedArtwork = () => {
+  return useQuery({
+    queryKey: ["featured-artwork"],
+    queryFn: async () => {
+      try {
+        const response: AxiosResponse<QueryResponse<Artwork>> =
+          await axiosInstance.get<ApiResponse>(
+            endPoints.featuredArtwork + "get"
+          );
+        return response?.data?.data;
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse>);
+      }
+    },
+  });
+};
+
+export const useToggleFeaturedArtwork = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["featured-artworks"],
+    mutationFn: async (artworkId: string) => {
+      const response: AxiosResponse<QueryResponse<Artwork>> =
+        await axiosInstance.patch(
+          `${endPoints.featuredArtwork}${artworkId}/toggle-featured`
+        );
+      return response.data?.data;
+    },
+    onMutate: async (artworkId) => {
+      await queryClient.cancelQueries({ queryKey: ["artworks"] });
+
+      const previousArtworks =
+        queryClient.getQueryData<Artwork[]>(["artworks"]) || [];
+
+      // Optimistically set the selected artwork as featured and unfeature others
+      queryClient.setQueryData<Artwork[]>(
+        ["artworks"],
+        previousArtworks.map((artwork) =>
+          artwork._id === artworkId
+            ? { ...artwork, isFeatured: !artwork.isFeatured }
+            : { ...artwork, isFeatured: false }
+        )
+      );
+
+      return { previousArtworks };
+    },
+    onError: (error, artworkId, context) => {
+      if (context?.previousArtworks) {
+        queryClient.setQueryData(["artworks"], context.previousArtworks);
+      }
+    },
+  });
+};

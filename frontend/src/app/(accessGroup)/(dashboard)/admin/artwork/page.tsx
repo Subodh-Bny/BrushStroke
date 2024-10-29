@@ -6,6 +6,7 @@ import routes from "@/config/routes";
 import {
   useDeleteArtwork,
   useGetArtworks,
+  useToggleFeaturedArtwork,
   useUpdateArtwork,
 } from "@/services/api/artworkApi";
 import { PlusCircle } from "lucide-react";
@@ -26,11 +27,20 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import UpdateArtworkModal from "./UpdateArtwork";
+import { Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const ArtworksPage = () => {
   const { data: artworks, isLoading, isError } = useGetArtworks();
   const { mutate: updateMutate } = useUpdateArtwork();
   const { mutate: deleteMutate } = useDeleteArtwork();
+  const { mutate: toggleFeature } = useToggleFeaturedArtwork();
 
   if (isLoading) {
     return (
@@ -54,6 +64,10 @@ const ArtworksPage = () => {
     deleteMutate(id);
   };
 
+  const handleToggleFeature = (id: string) => {
+    toggleFeature(id);
+  };
+
   return (
     <Container>
       <div className="flex w-full justify-between px-2">
@@ -72,78 +86,117 @@ const ArtworksPage = () => {
           gridAutoFlow: "dense",
         }}
       >
-        {artworks?.map((artwork, index) => (
-          <Card
-            key={artwork._id}
-            className={`relative overflow-hidden group hover:cursor-pointer ${
-              index % 2 !== 0 && index <= 5 && "mt-4"
-            }`}
-            style={{
-              gridRowEnd: `span ${Math.ceil(
-                (index % 2 === 0 ? 150 : 140) / 10
-              )}`,
-            }}
-          >
-            <div className="relative w-full h-full">
-              <AlertDialog>
-                <AlertDialogTrigger>
-                  <X
-                    size={20}
-                    className="absolute z-50 right-1 top-1  text-white font-bold transition-opacity duration-300 opacity-0 group-hover:opacity-100 "
-                  />
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you absolutely sure?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone. This will permanently delete
-                      the artwork.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => {
-                        handleDeleteArtwork(artwork?._id || "");
-                      }}
-                      className="bg-red-500 hover:bg-red-600"
-                    >
-                      Continue
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+        {artworks?.map((artwork, index) => {
+          return (
+            <Card
+              key={artwork._id}
+              className={`relative overflow-hidden group hover:cursor-pointer ${
+                index % 2 !== 0 && index <= 5 && "mt-4"
+              }`}
+              style={{
+                gridRowEnd: `span ${Math.ceil(
+                  (index % 2 === 0 ? 150 : 140) / 10
+                )}`,
+              }}
+            >
+              <div className="relative w-full h-full">
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <X
+                      size={20}
+                      className="absolute z-50 right-1 top-1  text-white font-bold transition-opacity duration-300 opacity-0 group-hover:opacity-100 "
+                    />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the artwork.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => {
+                          handleDeleteArtwork(artwork?._id || "");
+                        }}
+                        className="bg-red-500 hover:bg-red-600"
+                      >
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
 
-              <Image
-                src={artwork.image || "/notFound.jpg"}
-                alt={artwork.title}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-                sizes="(max-width: 768px) 50vw, (min-width: 769px) 25vw"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 transition-opacity duration-300 opacity-0 group-hover:opacity-100 " />
-              <CardContent className="absolute inset-0 flex flex-col justify-end p-4 text-white transition-opacity duration-300 ">
-                <div className="group-hover:opacity-100 opacity-0 ">
-                  <h2 className="text-2xl font-bold mb-1">{artwork.title}</h2>
-                  <p className="text-sm mb-1">
-                    by{" "}
-                    {typeof artwork.artist === "object" &&
-                    "username" in artwork.artist
-                      ? artwork.artist.username
-                      : ""}
-                  </p>
-                  <p className="text-lg font-bold mb-2">${artwork.price}</p>
-                  <UpdateArtworkModal
-                    artwork={artwork}
-                    onUpdate={handleArtworkUpdate}
-                  />
-                </div>
-              </CardContent>
-            </div>
-          </Card>
-        ))}
+                <Image
+                  src={artwork.image || "/notFound.jpg"}
+                  alt={artwork.title}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-110"
+                  sizes="(max-width: 768px) 50vw, (min-width: 769px) 25vw"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40 transition-opacity duration-300 opacity-0 group-hover:opacity-100 " />
+                <CardContent className="absolute inset-0 flex flex-col justify-end p-4 text-white transition-opacity duration-300 ">
+                  <div className="group-hover:opacity-100 opacity-0 ">
+                    <h2 className="text-2xl font-bold mb-1">{artwork.title}</h2>
+                    <p className="text-sm mb-1">
+                      by{" "}
+                      {typeof artwork.artist === "object" &&
+                      "username" in artwork.artist
+                        ? artwork.artist.username
+                        : ""}
+                    </p>
+                    <p className="text-lg font-bold mb-2">${artwork.price}</p>
+                    <div className="flex justify-between">
+                      <UpdateArtworkModal
+                        artwork={artwork}
+                        onUpdate={handleArtworkUpdate}
+                      />
+                    </div>
+                  </div>
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger
+                        asChild
+                        className="absolute z-50 bottom-4 right-4"
+                      >
+                        <Button
+                          variant="secondary"
+                          size="icon"
+                          onClick={() => handleToggleFeature(artwork._id || "")}
+                          aria-label={
+                            artwork.isFeatured
+                              ? "Unfeature artwork"
+                              : "Feature artwork"
+                          }
+                        >
+                          <div className="relative">
+                            <Star
+                              className={`h-5 w-5 transition-colors duration-300 ${
+                                artwork.isFeatured
+                                  ? "text-yellow-400 fill-yellow-400"
+                                  : "text-black"
+                              }`}
+                            />
+                          </div>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        {artwork.isFeatured
+                          ? "Unfeature artwork"
+                          : "Feature artwork"}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </CardContent>
+              </div>
+            </Card>
+          );
+        })}
       </div>
     </Container>
   );

@@ -23,6 +23,33 @@ interface Artwork {
   price: string;
 }
 
+const artworksData: Artwork[] = [
+  {
+    image: "/hero1.jpg",
+    title: "Ethereal Dreams",
+    artist: "Alexandra Rivers",
+    description:
+      "A mesmerizing abstract piece that captures the essence of dreams and imagination.",
+    price: "1,200",
+  },
+  {
+    image: "/hero2.jpg",
+    title: "Urban Rhythm",
+    artist: "Marcus Steel",
+    description:
+      "A vibrant cityscape that pulses with the energy of modern urban life.",
+    price: "950",
+  },
+  {
+    image: "/hero-3.jpg",
+    title: "Serene Horizons",
+    artist: "Olivia Sky",
+    description:
+      "A calming landscape that invites viewers to lose themselves in distant horizons.",
+    price: "1,500",
+  },
+];
+
 export default function HeroArtworkCarousel() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [api, setApi] = useState<CarouselApi>();
@@ -34,33 +61,6 @@ export default function HeroArtworkCarousel() {
   );
 
   const { data: artworks } = useGetArtworks();
-
-  const artworksData: Artwork[] = [
-    {
-      image: "/hero1.jpg",
-      title: "Ethereal Dreams",
-      artist: "Alexandra Rivers",
-      description:
-        "A mesmerizing abstract piece that captures the essence of dreams and imagination.",
-      price: "1,200",
-    },
-    {
-      image: "/hero2.jpg",
-      title: "Urban Rhythm",
-      artist: "Marcus Steel",
-      description:
-        "A vibrant cityscape that pulses with the energy of modern urban life.",
-      price: "950",
-    },
-    {
-      image: "/hero-3.jpg",
-      title: "Serene Horizons",
-      artist: "Olivia Sky",
-      description:
-        "A calming landscape that invites viewers to lose themselves in distant horizons.",
-      price: "1,500",
-    },
-  ];
 
   const onSelect = useCallback(() => {
     if (!api) return;
