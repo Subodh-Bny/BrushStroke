@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { MoreHorizontal } from "lucide-react";
+import Link from "next/link";
+import routes from "@/config/routes";
 
 const OrdersTable = ({
   orders,
@@ -37,7 +39,7 @@ const OrdersTable = ({
           <TableHead>Amount</TableHead>
           <TableHead>Payment Status</TableHead>
           <TableHead>Status</TableHead>
-          {adminPage && <TableHead>Actions</TableHead>}
+          <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -77,9 +79,9 @@ const OrdersTable = ({
                   {order?.status}
                 </span>
               </TableCell>
-              {adminPage && (
-                <TableCell>
-                  {" "}
+
+              <TableCell>
+                {adminPage ? (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="h-8 w-8 p-0">
@@ -95,8 +97,15 @@ const OrdersTable = ({
                       <DropdownMenuItem>Cancel order</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </TableCell>
-              )}
+                ) : (
+                  <Link
+                    href={`${routes.khaltiReturn}?pidx=${order?.paymentDetails?.pidx}&purchase_order_id=${order?._id}`}
+                    className="text-blue-800 underline"
+                  >
+                    Verify Payment
+                  </Link>
+                )}
+              </TableCell>
             </TableRow>
           );
         })}

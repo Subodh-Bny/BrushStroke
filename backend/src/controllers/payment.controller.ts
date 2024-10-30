@@ -104,7 +104,7 @@ export const verifyKhaltiPaymentAndUpdateOrder = async (
       await newPayment.save();
     } else {
       await oldPayment.updateOne({
-        $set: { ...paymentDetails },
+        $set: { paymentDetails: { ...paymentDetails } },
       });
     }
 

@@ -162,7 +162,7 @@ const ArtworksPage = () => {
                     <Tooltip>
                       <TooltipTrigger
                         asChild
-                        className="absolute z-50 bottom-4 right-4"
+                        className="absolute z-40 bottom-4 right-4"
                       >
                         <Button
                           variant="secondary"

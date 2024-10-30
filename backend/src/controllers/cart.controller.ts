@@ -4,7 +4,7 @@ import Cart, { ICartItem } from "../models/cart.model";
 import { internalError } from "./controllerError";
 
 export interface CustomRequest extends Request {
-  user?: { _id: string };
+  user?: { _id: string; username: string; email: string; phoneNumber: string };
 }
 
 export const addToCart = async (req: CustomRequest, res: Response) => {

@@ -24,7 +24,7 @@ export const useCreateOrderKhalti = () => {
         const user = response.data.data?.user;
         queryClient.invalidateQueries({ queryKey: ["order"] });
         if (order && user) {
-          await khaltiInitiate({
+          khaltiInitiate({
             returnUrl: process.env.NEXT_PUBLIC_HOMEURL + routes.khaltiReturn,
             websiteUrl: process.env.NEXT_PUBLIC_HOMEURL + routes.landing.home,
             amount: order?.totalPrice || 0,
