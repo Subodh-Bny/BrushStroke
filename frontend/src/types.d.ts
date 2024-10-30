@@ -32,12 +32,13 @@ interface User {
 interface Artwork {
   _id?: string;
   title: string;
-  artist: User;
+  artist: User | string;
   price: number;
   category: string;
   image: string | undefined;
   description?: string;
   availability: boolean;
+  isFeatured?: boolean;
 }
 
 interface Category {
@@ -51,7 +52,8 @@ interface CartItem {
   quantity: number;
 }
 interface Cart {
-  usreId: string;
+  _id?: string;
+  userId: string;
   items: CartItem[];
 }
 
@@ -62,9 +64,11 @@ interface PaymentDetails {
   transaction_id: string;
   fee: number;
   refunded: boolean;
+  orderId?: string;
 }
 interface Order {
   _id?: string;
+  cartId?: string;
   artworks: string[];
   user?: User;
   status?: string;
@@ -75,6 +79,10 @@ interface Order {
   createdAt?: string;
 }
 
+interface OrderData {
+  user: User;
+  order: Order;
+}
 interface CustomerInfo {
   name: string;
   email: string;
@@ -102,4 +110,12 @@ interface EsewaPayment {
   tax_amount: string;
   total_amount: string;
   transaction_uuid: string;
+}
+
+
+interface Analytics{
+  newOrders:Order[];
+  newCustomers:number;
+  totalAvailableArtworks:number;
+  totalRevenue:number;
 }

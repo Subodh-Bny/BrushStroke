@@ -9,6 +9,7 @@ export interface IArtwork extends Document {
   availability: boolean;
   artist: mongoose.Types.ObjectId;
   createdAt: Date;
+  isFeatured: boolean;
 }
 
 const artworkSchema = new Schema<IArtwork>({
@@ -23,6 +24,7 @@ const artworkSchema = new Schema<IArtwork>({
   },
   artist: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   createdAt: { type: Date, default: Date.now },
+  isFeatured: { type: Boolean, default: false },
 });
 
 const Artwork = mongoose.model<IArtwork>("Artwork", artworkSchema);

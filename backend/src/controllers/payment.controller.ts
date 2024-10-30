@@ -3,6 +3,8 @@ import { createHmac } from "crypto";
 import axios from "axios";
 import Order from "../models/order.model";
 import Cart from "../models/cart.model";
+import { internalError } from "./controllerError";
+import PaymentDetails from "../models/payment.model";
 
 export const initiateKhaltiPayment = async (req: Request, res: Response) => {
   try {
@@ -38,10 +40,7 @@ export const initiateKhaltiPayment = async (req: Request, res: Response) => {
     // console.log(response);
     res.json(response.data);
   } catch (error) {
-    console.error("Error initiating payment:");
-    res
-      .status(500)
-      .json({ message: "Failed to initiate payment", error: req.body });
+    internalError("Error initiating payment", error, res);
   }
 };
 
@@ -76,7 +75,9 @@ export const verifyKhaltiPaymentAndUpdateOrder = async (
 
     const paymentDetails = await verifyKhaltiPayment(pidx);
 
-    console.log(paymentDetails);
+    if (!purchase_order_id) {
+      return res.status(400).json({ message: "Purchase order id is required" });
+    }
 
     const updatedOrder = await Order.findByIdAndUpdate(
       purchase_order_id,
@@ -85,6 +86,27 @@ export const verifyKhaltiPaymentAndUpdateOrder = async (
       },
       { new: true }
     );
+
+    const oldPayment = await PaymentDetails.findOne({
+      orderId: purchase_order_id,
+    });
+
+    if (!oldPayment) {
+      const newPayment = new PaymentDetails({
+        ...paymentDetails,
+        orderId: purchase_order_id,
+      });
+
+      if (!newPayment) {
+        return res.status(400).json({ message: "Couldn't create payment." });
+      }
+
+      await newPayment.save();
+    } else {
+      await oldPayment.updateOne({
+        $set: { ...paymentDetails },
+      });
+    }
 
     const updateCart = await Cart.findOneAndUpdate(
       { userId: updatedOrder?.user },
@@ -101,11 +123,11 @@ export const verifyKhaltiPaymentAndUpdateOrder = async (
       order: updatedOrder,
     });
   } catch (error: any) {
-    console.log(
+    internalError(
       "Error in verifyPaymentAndUpdateOrder controller",
-      error.message
+      error,
+      res
     );
-    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -150,5 +172,19 @@ export const generateEsewaSignature = async (req: Request, res: Response) => {
     res
       .status(500)
       .json({ message: "Failed to generate signature", error: error });
+  }
+};
+
+export const getPaymentDetails = async (req: Request, res: Response) => {
+  try {
+    const paymentDetails = await PaymentDetails.find();
+    if (paymentDetails)
+      return res.status(200).json({
+        message: "Payment details fetched successfully.",
+        data: paymentDetails,
+      });
+    return res.status(400).json({ message: "Couldn't fetch payment details." });
+  } catch (error) {
+    internalError("Error in getPaymentDetails controller", error, res);
   }
 };

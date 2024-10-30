@@ -27,6 +27,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
+import ArtistsSelect from "./ArtistsSelect";
 
 export default function UpdateArtworkModal({
   artwork,
@@ -41,6 +42,9 @@ export default function UpdateArtworkModal({
   const [categoryError, setCategoryError] = useState<string | undefined>(
     undefined
   );
+
+  const [artistError, setArtistError] = useState<string | undefined>(undefined);
+
   const {
     register,
     handleSubmit,
@@ -73,66 +77,79 @@ export default function UpdateArtworkModal({
   };
 
   const onSubmit = async (data: Artwork) => {
-    if (data.category === "" || data.category === undefined) {
+    if (!data.category) {
       setCategoryError("Select category");
-
       return;
     }
+
+    if (!data.artist) {
+      setArtistError("Select artist");
+      return;
+    }
+
+    setCategoryError(undefined);
+    setArtistError(undefined);
     setIsLoading(true);
+
     const formData = new FormData();
     const updatedData: Partial<Artwork> = {};
     const originalArtwork: Artwork = { ...artwork };
-    if (data?.image !== originalArtwork?.image) {
-      if (data?.image && data.image.length > 0) {
-        formData.append("file", data.image[0]);
-        formData.append(
-          "upload_preset",
-          process.env.NEXT_PUBLIC_UPLOAD_PRESET as string
-        );
-        formData.append(
-          "cloud_name",
-          process.env.NEXT_PUBLIC_CLOUD_NAME as string
-        );
-        try {
-          const response = await axios.post(
-            "https://api.cloudinary.com/v1_1/" +
-              process.env.NEXT_PUBLIC_CLOUD_NAME +
-              "/image/upload",
-            formData
-          );
-          const imageUrl = response.data.secure_url;
 
-          if (originalArtwork.image !== imageUrl) {
-            updatedData.image = imageUrl;
-          }
+    // Handle image upload
+    if (
+      data.image !== originalArtwork.image &&
+      data.image &&
+      data.image?.length > 0
+    ) {
+      formData.append("file", data.image[0]);
+      formData.append(
+        "upload_preset",
+        process.env.NEXT_PUBLIC_UPLOAD_PRESET as string
+      );
+      formData.append(
+        "cloud_name",
+        process.env.NEXT_PUBLIC_CLOUD_NAME as string
+      );
 
-          setImagePreviewUrl(null);
-        } catch (error) {
-          toast.error("Failed to upload image. Please try again.");
-          setIsLoading(false);
-          return;
+      try {
+        const response = await axios.post(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
+          formData
+        );
+        const imageUrl = response.data.secure_url;
+        if (originalArtwork.image !== imageUrl) {
+          updatedData.image = imageUrl;
         }
+        setImagePreviewUrl(null);
+      } catch (error) {
+        toast.error("Failed to upload image. Please try again.");
+        setIsLoading(false);
+        return;
       }
     }
 
-    if (originalArtwork.title !== data.title) {
-      updatedData.title = data.title;
+    // Update fields based on changes
+    if (originalArtwork.title !== data.title) updatedData.title = data.title;
+
+    // Handle artist update
+    const originalArtistId =
+      typeof originalArtwork.artist === "object"
+        ? originalArtwork.artist._id
+        : originalArtwork.artist;
+    const newArtistId =
+      typeof data.artist === "object" ? data.artist._id : data.artist;
+
+    if (originalArtistId !== newArtistId) {
+      updatedData.artist = data.artist; // Update to new artist
     }
-    if (originalArtwork.artist !== data.artist) {
-      updatedData.artist = data.artist;
-    }
-    if (originalArtwork.price !== data.price) {
-      updatedData.price = data.price;
-    }
-    if (originalArtwork.category !== data.category) {
+
+    if (originalArtwork.price !== data.price) updatedData.price = data.price;
+    if (originalArtwork.category !== data.category)
       updatedData.category = data.category;
-    }
-    if (originalArtwork.description !== data.description) {
+    if (originalArtwork.description !== data.description)
       updatedData.description = data.description;
-    }
-    if (originalArtwork.availability !== data.availability) {
+    if (originalArtwork.availability !== data.availability)
       updatedData.availability = data.availability;
-    }
 
     if (Object.keys(updatedData).length === 0) {
       toast.error("No changes detected.");
@@ -143,18 +160,22 @@ export default function UpdateArtworkModal({
     updatedData._id = data._id;
 
     try {
-      onUpdate(updatedData);
+      await onUpdate(updatedData); // Await the update to catch any errors
     } catch (error) {
       toast.error("Failed to update artwork. Please try again.");
     }
+
     setIsLoading(false);
     setIsOpen(false);
     reset(data);
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-red-500 hover:bg-red-600">Update Artwork</Button>
+        <Button className="bg-white hover:bg-gray-200 text-black">
+          Update Artwork
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
@@ -195,7 +216,7 @@ export default function UpdateArtworkModal({
               <span className="text-red-500">{errors.title?.message}</span>
             )}
           </div>
-          <div className="space-y-2">
+          <div className="space-y-4">
             <div>
               <Label htmlFor="category">Category</Label>
               <Controller
@@ -255,7 +276,6 @@ export default function UpdateArtworkModal({
                   <Image
                     src={imagePreviewUrl}
                     alt="Image Preview"
-                    className="mt-4"
                     width={100}
                     height={100}
                   />
@@ -268,15 +288,32 @@ export default function UpdateArtworkModal({
                 <Label htmlFor="featured">Featured Artwork</Label>
               </div> */}
 
+            <div className="grid gap-2">
+              <Label htmlFor="artist">
+                Artist <span className="text-red-500">*</span>
+              </Label>
+              <ArtistsSelect
+                setValue={setValue}
+                updateArtist={
+                  typeof artwork.artist === "object"
+                    ? artwork.artist
+                    : undefined
+                }
+              />
+              {artistError && (
+                <span className="text-red-500">{artistError}</span>
+              )}
+            </div>
+
             <div className="flex items-center gap-2">
               <Switch
-                id="active"
-                defaultChecked
+                id="available"
+                defaultChecked={artwork.availability}
                 onCheckedChange={(value) => {
                   setValue("availability", value);
                 }}
               />
-              <Label htmlFor="active">Active (visible in store)</Label>
+              <Label htmlFor="available">Availability (visible in store)</Label>
             </div>
           </div>
           <div className="flex justify-end space-x-2 pt-4">

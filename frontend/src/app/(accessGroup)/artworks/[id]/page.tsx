@@ -92,11 +92,12 @@ const ArtworkPage = ({ params }: { params: { id: string } }) => {
             </div>
             <Button
               className="w-full mt-4"
+              disabled={!artwork?.availability}
               onClick={() => {
                 artwork && addToCartHandler(artwork);
               }}
             >
-              Add to Cart
+              {!artwork?.availability ? "Out of stock" : "Add to Cart"}
             </Button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "../axiosInstance";
 import endPoints from "../endPoints";
 import { AxiosError, AxiosResponse } from "axios";
@@ -13,6 +13,7 @@ interface OrderData {
 }
 export const useCreateOrderKhalti = () => {
   const { mutate: khaltiInitiate } = useKhaltiInitiate();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["order"],
     mutationFn: async (data: Order) => {
@@ -21,6 +22,7 @@ export const useCreateOrderKhalti = () => {
           await axiosInstance.post<ApiResponse>(endPoints.order, data);
         const order = response.data?.data?.order;
         const user = response.data.data?.user;
+        queryClient.invalidateQueries({ queryKey: ["order"] });
         if (order && user) {
           await khaltiInitiate({
             returnUrl: process.env.NEXT_PUBLIC_HOMEURL + routes.khaltiReturn,

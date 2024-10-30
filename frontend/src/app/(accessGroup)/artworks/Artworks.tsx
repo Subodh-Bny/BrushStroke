@@ -84,7 +84,11 @@ export default function Artworks({
                   <div className="group-hover:opacity-100 opacity-0 ">
                     <h2 className="text-2xl font-bold mb-1">{artwork.title}</h2>
                     <p className="text-sm mb-1">
-                      by {artwork.artist && artwork?.artist.username}
+                      by{" "}
+                      {typeof artwork.artist === "object" &&
+                      "username" in artwork.artist
+                        ? artwork.artist.username
+                        : ""}
                     </p>
                     <p className="text-lg font-bold mb-2">Rs {artwork.price}</p>
                     <Button
@@ -92,9 +96,12 @@ export default function Artworks({
                         e.stopPropagation();
                         artwork && handleAddToCart(artwork);
                       }}
+                      disabled={!artwork.availability}
                       className="w-full bg-white text-black hover:bg-gray-200"
                     >
-                      Add to Cart
+                      {!artwork.availability
+                        ? "Artwork not available"
+                        : "Add to Cart"}
                     </Button>
                   </div>
                 </CardContent>

@@ -49,7 +49,7 @@ export const useVerifyKhalti = () => {
           switch (paymentDetails.status) {
             case "Completed":
               toast.success("Payment completed successfully.");
-              router.push(routes.cart);
+              router.push(routes.orders);
               break;
             case "Pending":
               toast.error("Payment is currently pending.");

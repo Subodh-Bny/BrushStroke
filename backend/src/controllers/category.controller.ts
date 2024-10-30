@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 import mongoose from "mongoose";
 import Category from "../models/category.model";
+import { internalError } from "./controllerError";
 
 export const createCategory = async (req: Request, res: Response) => {
   try {
@@ -23,8 +24,7 @@ export const createCategory = async (req: Request, res: Response) => {
       data: { name: newCategory.name, id: newCategory._id },
     });
   } catch (error: any) {
-    console.error("Error in create category controller", error.message);
-    return res.status(500).json({ error: "Internal server error" });
+    internalError("Error in create category controller", error, res);
   }
 };
 
@@ -37,8 +37,7 @@ export const getAllCategories = async (req: Request, res: Response) => {
       data: categories,
     });
   } catch (error: any) {
-    console.log("Error in getCategory controller", error.message);
-    return res.status(500).json({ error: "Internal server erro" });
+    internalError("Error in getCategory controller", error, res);
   }
 };
 
@@ -73,8 +72,7 @@ export const updateCategory = async (req: Request, res: Response) => {
       category: updatedCategory,
     });
   } catch (error: any) {
-    console.log("Error in update category controller");
-    return res.status(500).json({ error: "Internal server error" });
+    internalError("Error in update category controller", error, res);
   }
 };
 
@@ -96,9 +94,6 @@ export const deleteCategory = async (req: Request, res: Response) => {
 
     return res.status(202).json({ message: "Category deleted successfully" });
   } catch (error: any) {
-    console.log("Error in delete category controller", error.message);
-    return res.status(500).json({
-      error: "Internal server error",
-    });
+    internalError("Error in delete category controller", error, res);
   }
 };

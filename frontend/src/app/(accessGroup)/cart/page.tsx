@@ -193,7 +193,7 @@ export default function CartPage() {
                             {item.artwork.title}
                           </h3>
                           <p className="text-gray-600">
-                            Rs.{item.artwork.price.toFixed(2)} x {item.quantity}
+                            Rs.&nbsp;{item.artwork.price.toFixed(2)}
                           </p>
                         </div>
                         <Button

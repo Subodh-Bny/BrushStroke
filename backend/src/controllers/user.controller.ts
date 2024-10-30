@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 import User from "../models/user.model";
+import { internalError } from "./controllerError";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -13,9 +14,21 @@ export const getAllUsers = async (req: Request, res: Response) => {
     }
     return res.status(400).json({ message: "Coundnot fetch users" });
   } catch (error: any) {
-    console.log("Error in get all users controller", error.message);
-    return res
-      .status(500)
-      .json({ error: "Internal server error", message: error.messsage });
+    internalError("Error in get all users controller", error, res);
+  }
+};
+
+export const getArtists = async (req: Request, res: Response) => {
+  try {
+    const users = await User.find().select("-password");
+    if (users) {
+      const filteredUsers = users.filter((user) => user.role === "ARTIST");
+      return res
+        .status(200)
+        .json({ message: "Artists fetched successfully", data: filteredUsers });
+    }
+    return res.status(400).json({ message: "Coundnot fetch users" });
+  } catch (error: any) {
+    internalError("Error in get artists controller", error, res);
   }
 };

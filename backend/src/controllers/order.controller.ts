@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import Order from "../models/order.model";
 import { CustomRequest } from "./cart.controller";
 import User from "../models/user.model";
+import { internalError } from "./controllerError";
+import Artwork from "../models/artwork.model";
+import Cart from "../models/cart.model";
 
 export const createOrder = async (req: CustomRequest, res: Response) => {
   try {
@@ -10,13 +13,31 @@ export const createOrder = async (req: CustomRequest, res: Response) => {
       const { artworks, status, totalPrice, shippingAddress, phoneNumber } =
         req.body;
 
+      const notAvailable = await Artwork.findOne({
+        availability: false,
+        _id: { $in: artworks },
+      });
+
+      if (notAvailable) {
+        return res.status(404).json({
+          message: `The artwork ${notAvailable.title} is currently unavailable. Please check back later.`,
+        });
+      }
+
       const newOrder = new Order({
         user: userId,
         artworks,
         paymentDetails: { status },
-
         totalPrice,
       });
+
+      const updatedArtwork = await Artwork.updateMany(
+        {
+          _id: { $in: artworks },
+        },
+        { $set: { availability: false } }
+      );
+
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         {
@@ -32,6 +53,12 @@ export const createOrder = async (req: CustomRequest, res: Response) => {
         return res.status(404).json({ message: "User not found" });
       }
 
+      const updateCart = await Cart.findOneAndUpdate(
+        { userId },
+        { $set: { items: [] } },
+        { new: true }
+      );
+
       await newOrder.save();
 
       return res.status(201).json({
@@ -43,8 +70,7 @@ export const createOrder = async (req: CustomRequest, res: Response) => {
       });
     }
   } catch (error: any) {
-    console.log("Error in createOrder controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in createOrder controller", error, res);
   }
 };
 
@@ -54,11 +80,10 @@ export const getAllOrders = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Orders fetched successfully",
-     data: orders,
+      data: orders,
     });
   } catch (error: any) {
-    console.log("Error in getAllOrders controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in getAllOrders controller", error, res);
   }
 };
 
@@ -77,8 +102,7 @@ export const getOrderById = async (req: Request, res: Response) => {
       data: order,
     });
   } catch (error: any) {
-    console.log("Error in getOrderById controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in getOrderById controller", error, res);
   }
 };
 
@@ -99,8 +123,7 @@ export const getOrderByUserId = async (req: CustomRequest, res: Response) => {
       data: order,
     });
   } catch (error: any) {
-    console.log("Error in getOrderByUserId controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in getOrderByUserId controller", error, res);
   }
 };
 
@@ -122,8 +145,7 @@ export const updateOrder = async (req: Request, res: Response) => {
       order: updatedOrder,
     });
   } catch (error: any) {
-    console.log("Error in updateOrder controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in updateOrder controller", error, res);
   }
 };
 
@@ -141,7 +163,6 @@ export const deleteOrder = async (req: Request, res: Response) => {
       message: "Order deleted successfully",
     });
   } catch (error: any) {
-    console.log("Error in deleteOrder controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    internalError("Error in deleteOrder controller", error, res);
   }
 };

@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 import mongoose from "mongoose";
 import Cart, { ICartItem } from "../models/cart.model";
+import { internalError } from "./controllerError";
 
 export interface CustomRequest extends Request {
   user?: { _id: string };
@@ -34,10 +35,7 @@ export const addToCart = async (req: CustomRequest, res: Response) => {
     await cart.save();
     return res.status(201).json({ message: "Item added to cart", data: cart });
   } catch (error: any) {
-    console.error("Error adding item to cart", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal Server Error", error: error.message });
+    internalError("Error adding item to cart", error, res);
   }
 };
 
@@ -57,10 +55,7 @@ export const getCart = async (req: CustomRequest, res: Response) => {
       .status(200)
       .json({ message: "Cart fetched successfully", data: cart });
   } catch (error: any) {
-    console.error("Error in get cart controller", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    internalError("Error in get cart controller", error, res);
   }
 };
 
@@ -90,9 +85,6 @@ export const removeItemFromCart = async (req: Request, res: Response) => {
       .status(202)
       .json({ message: "Item removed successfully", data: result });
   } catch (error: any) {
-    console.error("Error in remove cart item controller", error.message);
-    return res
-      .status(500)
-      .json({ message: "Internal server error", error: error.message });
+    internalError("Error in remove cart item controller", error, res);
   }
 };

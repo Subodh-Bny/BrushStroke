@@ -55,7 +55,7 @@ export default function Category() {
                   src={
                     artworks?.find(
                       (artwork) => artwork.category === category?._id
-                    )?.image || "/dummy_category.jpg"
+                    )?.image || "/noImage.jpg"
                   }
                   alt={"category.title"}
                   fill
