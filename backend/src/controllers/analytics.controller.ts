@@ -30,14 +30,15 @@ const calculateRevenueChange = async () => {
     { $group: { _id: null, total_amount: { $sum: "$total_amount" } } },
   ]);
 
-  const currentRevenue = currentMonthRevenue[0]?.totalRevenue || 0;
-  const previousRevenue = previousMonthRevenue[0]?.totalRevenue || 0;
-
+  const currentRevenue = currentMonthRevenue[0]?.total_amount || 0;
+  const previousRevenue = previousMonthRevenue[0]?.total_amount || 0;
+  console.log(previousRevenue);
+  console.log(currentRevenue);
   const revenueChangePercentage =
     previousRevenue === 0
       ? currentRevenue > 0
         ? 100
-        : -100 // Handle division by zero
+        : 0
       : ((currentRevenue - previousRevenue) / previousRevenue) * 100;
 
   return revenueChangePercentage.toFixed(2);

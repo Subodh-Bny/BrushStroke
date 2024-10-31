@@ -82,6 +82,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
   try {
     const totalOrders = await Order.countDocuments();
     const orders = await Order.find()
+      .sort({ createdAt: -1 })
       .populate({ path: "user", select: "-password" })
       .populate("artworks")
       .skip(skip)
@@ -130,6 +131,7 @@ export const getOrderByUserId = async (req: CustomRequest, res: Response) => {
     const totalOrders = await Order.countDocuments({ user: userId });
 
     const order = await Order.find({ user: userId })
+      .sort({ createdAt: -1 })
       .populate([{ path: "user", select: "-password" }, { path: "artworks" }])
       .skip(skip)
       .limit(limit);
