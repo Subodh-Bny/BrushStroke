@@ -10,5 +10,6 @@ const router = (0, express_1.Router)();
 router.post("/initiateKhalti", protectRoute_1.default, payment_controller_1.initiateKhaltiPayment);
 router.post("/verifyKhalti", protectRoute_1.default, payment_controller_1.verifyKhaltiPaymentAndUpdateOrder);
 router.post("/generate-esewa-signature", protectRoute_1.default, payment_controller_1.generateEsewaSignature);
+router.get("/details", protectRoute_1.default, payment_controller_1.getPaymentDetails);
 exports.default = router;
 //# sourceMappingURL=payment.routes.js.map

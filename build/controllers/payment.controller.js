@@ -3,11 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateEsewaSignature = exports.verifyKhaltiPaymentAndUpdateOrder = exports.verifyKhaltiPayment = exports.initiateKhaltiPayment = void 0;
+exports.getPaymentDetails = exports.generateEsewaSignature = exports.verifyKhaltiPaymentAndUpdateOrder = exports.verifyKhaltiPayment = exports.initiateKhaltiPayment = void 0;
 const crypto_1 = require("crypto");
 const axios_1 = __importDefault(require("axios"));
 const order_model_1 = __importDefault(require("../models/order.model"));
 const cart_model_1 = __importDefault(require("../models/cart.model"));
+const controllerError_1 = require("./controllerError");
+const payment_model_1 = __importDefault(require("../models/payment.model"));
 const initiateKhaltiPayment = async (req, res) => {
     try {
         const { returnUrl, websiteUrl, amount, purchaseOrderId, purchaseOrderName, customerInfo, } = req.body;
@@ -30,10 +32,7 @@ const initiateKhaltiPayment = async (req, res) => {
         res.json(response.data);
     }
     catch (error) {
-        console.error("Error initiating payment:");
-        res
-            .status(500)
-            .json({ message: "Failed to initiate payment", error: req.body });
+        (0, controllerError_1.internalError)("Error initiating payment", error, res);
     }
 };
 exports.initiateKhaltiPayment = initiateKhaltiPayment;
@@ -59,10 +58,30 @@ const verifyKhaltiPaymentAndUpdateOrder = async (req, res) => {
     try {
         const { pidx, purchase_order_id } = req.body;
         const paymentDetails = await (0, exports.verifyKhaltiPayment)(pidx);
-        console.log(paymentDetails);
+        if (!purchase_order_id) {
+            return res.status(400).json({ message: "Purchase order id is required" });
+        }
         const updatedOrder = await order_model_1.default.findByIdAndUpdate(purchase_order_id, {
             paymentDetails: paymentDetails,
         }, { new: true });
+        const oldPayment = await payment_model_1.default.findOne({
+            orderId: purchase_order_id,
+        });
+        if (!oldPayment) {
+            const newPayment = new payment_model_1.default({
+                ...paymentDetails,
+                orderId: purchase_order_id,
+            });
+            if (!newPayment) {
+                return res.status(400).json({ message: "Couldn't create payment." });
+            }
+            await newPayment.save();
+        }
+        else {
+            await oldPayment.updateOne({
+                $set: { paymentDetails: { ...paymentDetails } },
+            });
+        }
         const updateCart = await cart_model_1.default.findOneAndUpdate({ userId: updatedOrder?.user }, { $set: { items: [] } }, { new: true });
         if (!updatedOrder) {
             return res.status(404).json({ error: "Order not found" });
@@ -73,8 +92,7 @@ const verifyKhaltiPaymentAndUpdateOrder = async (req, res) => {
         });
     }
     catch (error) {
-        console.log("Error in verifyPaymentAndUpdateOrder controller", error.message);
-        return res.status(500).json({ error: "Internal server error" });
+        (0, controllerError_1.internalError)("Error in verifyPaymentAndUpdateOrder controller", error, res);
     }
 };
 exports.verifyKhaltiPaymentAndUpdateOrder = verifyKhaltiPaymentAndUpdateOrder;
@@ -111,4 +129,19 @@ const generateEsewaSignature = async (req, res) => {
     }
 };
 exports.generateEsewaSignature = generateEsewaSignature;
+const getPaymentDetails = async (req, res) => {
+    try {
+        const paymentDetails = await payment_model_1.default.find();
+        if (paymentDetails)
+            return res.status(200).json({
+                message: "Payment details fetched successfully.",
+                data: paymentDetails,
+            });
+        return res.status(400).json({ message: "Couldn't fetch payment details." });
+    }
+    catch (error) {
+        (0, controllerError_1.internalError)("Error in getPaymentDetails controller", error, res);
+    }
+};
+exports.getPaymentDetails = getPaymentDetails;
 //# sourceMappingURL=payment.controller.js.map

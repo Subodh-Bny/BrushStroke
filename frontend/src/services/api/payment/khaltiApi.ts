@@ -37,6 +37,12 @@ export const useVerifyKhalti = () => {
       orderId: string;
     }) => {
       try {
+        if (pidx === "undefined" || !pidx) {
+          toast.error("Purchase incomplete");
+          router.push(routes.orders);
+          return;
+        }
+
         const response = await axiosInstance.post(endPoints.verifyKhalti, {
           pidx,
           purchase_order_id: orderId,
@@ -53,21 +59,27 @@ export const useVerifyKhalti = () => {
               break;
             case "Pending":
               toast.error("Payment is currently pending.");
+              router.push(routes.orders);
               break;
             case "Expired":
               toast.error("Payment has expired.");
+              router.push(routes.orders);
               break;
             case "User canceled":
               toast.error("Payment was canceled by the user.");
+              router.push(routes.orders);
               break;
             case "Refunded":
               toast.success("Payment has been refunded.");
+              router.push(routes.orders);
               break;
             case "Partially Refunded":
               toast.error("Payment has been partially refunded.");
+              router.push(routes.orders);
               break;
             default:
               toast.error("Unknown payment status.");
+              router.push(routes.orders);
           }
         }
         queryClient.invalidateQueries({ queryKey: ["cart"] });

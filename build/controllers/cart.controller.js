@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.removeItemFromCart = exports.getCart = exports.addToCart = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const cart_model_1 = __importDefault(require("../models/cart.model"));
+const controllerError_1 = require("./controllerError");
 const addToCart = async (req, res) => {
     const { artworkId } = req.body;
     const userId = req.user?._id;
@@ -28,10 +29,7 @@ const addToCart = async (req, res) => {
         return res.status(201).json({ message: "Item added to cart", data: cart });
     }
     catch (error) {
-        console.error("Error adding item to cart", error.message);
-        return res
-            .status(500)
-            .json({ message: "Internal Server Error", error: error.message });
+        (0, controllerError_1.internalError)("Error adding item to cart", error, res);
     }
 };
 exports.addToCart = addToCart;
@@ -50,10 +48,7 @@ const getCart = async (req, res) => {
             .json({ message: "Cart fetched successfully", data: cart });
     }
     catch (error) {
-        console.error("Error in get cart controller", error.message);
-        return res
-            .status(500)
-            .json({ message: "Internal server error", error: error.message });
+        (0, controllerError_1.internalError)("Error in get cart controller", error, res);
     }
 };
 exports.getCart = getCart;
@@ -77,10 +72,7 @@ const removeItemFromCart = async (req, res) => {
             .json({ message: "Item removed successfully", data: result });
     }
     catch (error) {
-        console.error("Error in remove cart item controller", error.message);
-        return res
-            .status(500)
-            .json({ message: "Internal server error", error: error.message });
+        (0, controllerError_1.internalError)("Error in remove cart item controller", error, res);
     }
 };
 exports.removeItemFromCart = removeItemFromCart;

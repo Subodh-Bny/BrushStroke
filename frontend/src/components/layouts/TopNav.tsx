@@ -39,7 +39,7 @@ const TopNav = () => {
   const cartLength = useCartLength();
   return (
     <div
-      className={`w-full fixed top-0 z-40 backdrop-blur-[2px] transition-all duration-300 ${
+      className={`w-full fixed top-0 z-50 backdrop-blur-[2px] transition-all duration-300 ${
         pathname === "/"
           ? isScrolled
             ? "bg-background shadow-lg"

@@ -15,11 +15,13 @@ const artwork_routes_1 = __importDefault(require("./routes/artwork.routes"));
 const order_routes_1 = __importDefault(require("./routes/order.routes"));
 const payment_routes_1 = __importDefault(require("./routes/payment.routes"));
 const cart_routes_1 = __importDefault(require("./routes/cart.routes"));
+const analytics_routes_1 = __importDefault(require("./routes/analytics.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 5000;
+//, "https://test-pay.khalti.com"
 app.use((0, cors_1.default)({
-    origin: ["http://localhost:3000", "https://test-pay.khalti.com"],
+    origin: ["http://localhost:3000"],
     credentials: true,
 }));
 app.use(express_1.default.json());
@@ -31,6 +33,7 @@ app.use("/api/artwork", artwork_routes_1.default);
 app.use("/api/payment", payment_routes_1.default);
 app.use("/api/order", order_routes_1.default);
 app.use("/api/cart", cart_routes_1.default);
+app.use("/api/analytics", analytics_routes_1.default);
 app.listen(port, () => {
     (0, connectToMongoDB_1.default)();
     console.log(`[server]: Server is running at http://localhost:${port}`);

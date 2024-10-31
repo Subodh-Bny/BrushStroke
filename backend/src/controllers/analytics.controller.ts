@@ -8,11 +8,12 @@ import User from "../models/user.model";
 export const getAnalytics = async (req: Request, res: Response) => {
   try {
     const payments: IPaymentDetails[] = await PaymentDetail.find();
-    const totalRevenue = payments.reduce(
-      (total, acc) =>
-        acc.status === "Completed" ? acc.total_amount + total : total,
-      0
-    );
+    const totalRevenue =
+      payments.reduce(
+        (total, acc) =>
+          acc.status === "Completed" ? acc.total_amount + total : total,
+        0
+      ) / 100;
 
     const artworks: IArtwork[] = await Artwork.find();
 
@@ -35,7 +36,12 @@ export const getAnalytics = async (req: Request, res: Response) => {
 
     res.status(200).json({
       message: "Analytics fetched",
-      data: { totalRevenue, totalAvailableArtworks, newOrders, newCustomers },
+      data: {
+        totalRevenue,
+        totalAvailableArtworks,
+        newOrders,
+        newCustomers: newCustomers.length,
+      },
     });
   } catch (error) {
     internalError("Error in getAnalytics Controller", error, res);

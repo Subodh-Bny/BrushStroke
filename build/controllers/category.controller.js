@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCategory = exports.updateCategory = exports.getAllCategories = exports.createCategory = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const category_model_1 = __importDefault(require("../models/category.model"));
+const controllerError_1 = require("./controllerError");
 const createCategory = async (req, res) => {
     try {
         const { name } = req.body;
@@ -24,8 +25,7 @@ const createCategory = async (req, res) => {
         });
     }
     catch (error) {
-        console.error("Error in create category controller", error.message);
-        return res.status(500).json({ error: "Internal server error" });
+        (0, controllerError_1.internalError)("Error in create category controller", error, res);
     }
 };
 exports.createCategory = createCategory;
@@ -38,8 +38,7 @@ const getAllCategories = async (req, res) => {
         });
     }
     catch (error) {
-        console.log("Error in getCategory controller", error.message);
-        return res.status(500).json({ error: "Internal server erro" });
+        (0, controllerError_1.internalError)("Error in getCategory controller", error, res);
     }
 };
 exports.getAllCategories = getAllCategories;
@@ -66,8 +65,7 @@ const updateCategory = async (req, res) => {
         });
     }
     catch (error) {
-        console.log("Error in update category controller");
-        return res.status(500).json({ error: "Internal server error" });
+        (0, controllerError_1.internalError)("Error in update category controller", error, res);
     }
 };
 exports.updateCategory = updateCategory;
@@ -87,10 +85,7 @@ const deleteCategory = async (req, res) => {
         return res.status(202).json({ message: "Category deleted successfully" });
     }
     catch (error) {
-        console.log("Error in delete category controller", error.message);
-        return res.status(500).json({
-            error: "Internal server error",
-        });
+        (0, controllerError_1.internalError)("Error in delete category controller", error, res);
     }
 };
 exports.deleteCategory = deleteCategory;

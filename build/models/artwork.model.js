@@ -36,6 +36,7 @@ const artworkSchema = new mongoose_1.Schema({
     },
     artist: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "User" },
     createdAt: { type: Date, default: Date.now },
+    isFeatured: { type: Boolean, default: false },
 });
 const Artwork = mongoose_1.default.model("Artwork", artworkSchema);
 exports.default = Artwork;

@@ -111,3 +111,11 @@ interface EsewaPayment {
   total_amount: string;
   transaction_uuid: string;
 }
+
+
+interface Analytics{
+  newOrders:Order[];
+  newCustomers:number;
+  totalAvailableArtworks:number;
+  totalRevenue:number;
+}

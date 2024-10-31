@@ -3,6 +3,7 @@ import { createHmac } from "crypto";
 import axios from "axios";
 import Order from "../models/order.model";
 import Cart from "../models/cart.model";
+
 import { internalError } from "./controllerError";
 import PaymentDetails from "../models/payment.model";
 
@@ -87,16 +88,26 @@ export const verifyKhaltiPaymentAndUpdateOrder = async (
       { new: true }
     );
 
-    const newPayment = new PaymentDetails({
-      ...paymentDetails,
+    const oldPayment = await PaymentDetails.findOne({
       orderId: purchase_order_id,
     });
 
-    if (!newPayment) {
-      return res.status(400).json({ message: "Couldn't create payment." });
-    }
+    if (!oldPayment) {
+      const newPayment = new PaymentDetails({
+        ...paymentDetails,
+        orderId: purchase_order_id,
+      });
 
-    await newPayment.save();
+      if (!newPayment) {
+        return res.status(400).json({ message: "Couldn't create payment." });
+      }
+
+      await newPayment.save();
+    } else {
+      await oldPayment.updateOne({
+        $set: { paymentDetails: { ...paymentDetails } },
+      });
+    }
 
     const updateCart = await Cart.findOneAndUpdate(
       { userId: updatedOrder?.user },

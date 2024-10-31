@@ -9,7 +9,7 @@ export const useGetAnalytics = () => {
     queryKey: ["analytics"],
     queryFn: async () => {
       try {
-        const response: AxiosResponse<QueryResponse> =
+        const response: AxiosResponse<QueryResponse<Analytics>> =
           await axiosInstance.get<ApiResponse>(endPoints.analytics);
         return response.data?.data;
       } catch (error: unknown) {

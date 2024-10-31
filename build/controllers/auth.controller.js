@@ -7,6 +7,7 @@ exports.login = exports.signup = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const user_model_1 = __importDefault(require("../models/user.model"));
 const generateToken_1 = __importDefault(require("../utils/generateToken"));
+const controllerError_1 = require("./controllerError");
 const signup = async (req, res) => {
     try {
         const { username, email, password, confirmPassword, profilePic, role } = req.body;
@@ -45,7 +46,6 @@ const signup = async (req, res) => {
         });
     }
     catch (error) {
-        console.error("Error in signup controller:", error.message);
         if (error.code === 11000) {
             const field = Object.keys(error.keyValue)[0];
             const value = error.keyValue[field];
@@ -54,10 +54,7 @@ const signup = async (req, res) => {
                 message: `The ${field} is already in use. Please choose a different one.`,
             });
         }
-        return res.status(500).json({
-            error: "Internal server error",
-            message: error.message,
-        });
+        (0, controllerError_1.internalError)("Error in  signup  controller", error, res);
     }
 };
 exports.signup = signup;
@@ -85,10 +82,7 @@ const login = async (req, res) => {
         });
     }
     catch (error) {
-        console.log("Error in login controller", error.message);
-        return res
-            .status(500)
-            .json({ message: "Internal server error", error: error.message });
+        (0, controllerError_1.internalError)("Error in  login  controller", error, res);
     }
 };
 exports.login = login;
