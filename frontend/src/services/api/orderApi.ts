@@ -11,6 +11,7 @@ interface OrderData {
   user: User;
   order: Order;
 }
+
 export const useCreateOrderKhalti = () => {
   const { mutate: khaltiInitiate } = useKhaltiInitiate();
   const queryClient = useQueryClient();
@@ -65,35 +66,45 @@ export const useCreateOrderEsewa = () => {
   });
 };
 
-export const useGetOrderByUserId = ({ userId }: { userId: string }) => {
-  return useQuery({
-    queryKey: ["userOrders", userId],
+export const useGetOrderByUserId = ({
+  userId,
+  page = 1,
+}: {
+  userId: string;
+  page?: number;
+}) => {
+  return useQuery<OrderWithPaginationResponse<Order[]>, AxiosError>({
+    queryKey: ["userOrders", userId, page],
     queryFn: async () => {
       try {
-        const response: AxiosResponse<QueryResponse<Order[]>> =
-          await axiosInstance.get<ApiResponse>(
-            endPoints.getOrderByUserId + userId
+        const response: AxiosResponse<OrderWithPaginationResponse<Order[]>> =
+          await axiosInstance.get<OrderWithPaginationResponse<Order[]>>(
+            `${endPoints.getOrderByUserId}${userId}?page=${page}`
           );
-        // console.log(response.data);
-        return response.data?.data || [];
+
+        return response.data;
       } catch (error) {
         requestError(error as AxiosError<ApiResponse, unknown>);
+        throw error;
       }
     },
   });
 };
 
-export const useGetOrders = () => {
-  return useQuery({
-    queryKey: ["orders"],
+export const useGetOrders = (page?: number) => {
+  return useQuery<OrderWithPaginationResponse<Order[]>, AxiosError>({
+    queryKey: ["orders", page],
     queryFn: async () => {
       try {
-        const response: AxiosResponse<QueryResponse<Order[]>> =
-          await axiosInstance.get<ApiResponse>(endPoints.order);
-        // console.log(response.data);
-        return response.data?.data || [];
+        const response: AxiosResponse<OrderWithPaginationResponse<Order[]>> =
+          await axiosInstance.get<OrderWithPaginationResponse<Order[]>>(
+            page ? `${endPoints.order}?page=${page}` : endPoints.order
+          );
+
+        return response.data;
       } catch (error) {
         requestError(error as AxiosError<ApiResponse, unknown>);
+        throw error;
       }
     },
   });

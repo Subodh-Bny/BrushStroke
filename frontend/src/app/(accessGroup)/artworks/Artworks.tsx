@@ -46,7 +46,10 @@ export default function Artworks({
         <div className="flex w-full justify-center items-center">
           No artworks for the selected category at the moment. Explore other
           categories&nbsp;
-          <Link href={routes.landing.home} className="text-red-500 underline">
+          <Link
+            href={routes.landing.home + "#categories"}
+            className="text-red-500 underline"
+          >
             here
           </Link>
           .

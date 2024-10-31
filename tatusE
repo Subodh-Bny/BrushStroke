@@ -1,0 +1,89 @@
+[33mcommit fa47d1e34cab3a395660fd609f2ca9a8e18b9f71[m[33m ([m[1;36mHEAD[m[33m)[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Sun Oct 27 20:37:30 2024 +0545
+
+    artwork artist
+
+[33mcommit cda408833c20013592b7ae5795107b956ce0dafb[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Sun Oct 27 18:17:48 2024 +0545
+
+    hero carousel dynamic
+
+[33mcommit f5dcf7ba43b6045e349b51de82c49b869a480909[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Fri Oct 25 22:25:49 2024 +0545
+
+    order page initial
+
+[33mcommit 781bd100e6bba77599e4761911e1cbc820db010b[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Thu Oct 24 20:29:05 2024 +0545
+
+    khalti complete
+
+[33mcommit e06e0d718e324620177ea168ae047b90ec881799[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Sun Oct 20 22:09:37 2024 +0545
+
+    khalti integrate validation failed
+
+[33mcommit 8b3395210f847a6caa7b79a6d61e462836f429b2[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Sat Oct 19 22:04:14 2024 +0545
+
+    artworks with their category page
+
+[33mcommit 3c7ad172798bcf7bbafe7786b95538422002b2f8[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Sat Oct 19 19:56:23 2024 +0545
+
+    artwork page, cart page, CRUD for category
+
+[33mcommit 8fb826c37182c35c0547b672961eb1112eb49927[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Fri Sep 20 22:41:06 2024 +0545
+
+    artwork create, category create, artwork display in admin panel
+
+[33mcommit e3d67f8fa919fd9be7883878ea2b878afeb7fc99[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Thu Sep 19 20:49:50 2024 +0545
+
+    links adjusted
+
+[33mcommit 5b45cdd49866b97df8805fae660a8052c209e3c4[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Thu Sep 19 19:59:57 2024 +0545
+
+    Auth complete
+
+[33mcommit 0d65c8eb63e9d140a0a638645cf78dcfa99ab8a0[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Thu Sep 19 14:54:07 2024 +0545
+
+    Signup form created
+
+[33mcommit 9cc3dce9f2faa132de9ccc123f2516209c130b1d[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Tue Sep 17 22:46:12 2024 +0545
+
+    Login initial
+
+[33mcommit 7623505ca7703e81b2c9b248aa7ce0a15d1788b1[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Tue Sep 17 18:27:14 2024 +0545
+
+    Products page
+
+[33mcommit 89243c63cc5a29b5ec535a4ac8aa01c6852e0c0c[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Wed Sep 11 22:32:09 2024 +0545
+
+    frontend home featured
+
+[33mcommit fa7fe95cf16f5c0e43f8a18c4adfcb2b694afd6c[m
+Author: Subodh-Bny <adhikarisubodh77@gmail.com>
+Date:   Tue Sep 10 17:50:05 2024 +0545
+
+    minor issue

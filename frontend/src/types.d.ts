@@ -83,6 +83,13 @@ interface OrderData {
   user: User;
   order: Order;
 }
+
+interface OrderWithPaginationResponse<T> extends QueryResponse {
+  data: T;
+  totalOrders: number;
+  totalPages: number;
+  currentPAge: number;
+}
 interface CustomerInfo {
   name: string;
   email: string;

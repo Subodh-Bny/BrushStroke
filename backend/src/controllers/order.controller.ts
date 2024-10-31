@@ -75,12 +75,24 @@ export const createOrder = async (req: CustomRequest, res: Response) => {
 };
 
 export const getAllOrders = async (req: Request, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 5;
+  const skip = (page - 1) * limit;
+
   try {
-    const orders = await Order.find().populate("user artworks");
+    const totalOrders = await Order.countDocuments();
+    const orders = await Order.find()
+      .populate({ path: "user", select: "-password" })
+      .populate("artworks")
+      .skip(skip)
+      .limit(limit);
 
     return res.status(200).json({
       message: "Orders fetched successfully",
       data: orders,
+      totalOrders,
+      totalPages: Math.ceil(totalOrders / limit),
+      currentPage: page,
     });
   } catch (error: any) {
     internalError("Error in getAllOrders controller", error, res);
@@ -91,7 +103,9 @@ export const getOrderById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const order = await Order.findById(id).populate("user artworks");
+    const order = await Order.findById(id)
+      .populate({ path: "user", select: "-password" })
+      .populate("artworks");
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
@@ -107,12 +121,18 @@ export const getOrderById = async (req: Request, res: Response) => {
 };
 
 export const getOrderByUserId = async (req: CustomRequest, res: Response) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 5;
+  const skip = (page - 1) * limit;
+
   try {
     const { userId } = req.params;
-    const order = await Order.find({ user: userId }).populate([
-      { path: "user", select: "-password" },
-      { path: "artworks" },
-    ]);
+    const totalOrders = await Order.countDocuments({ user: userId });
+
+    const order = await Order.find({ user: userId })
+      .populate([{ path: "user", select: "-password" }, { path: "artworks" }])
+      .skip(skip)
+      .limit(limit);
 
     if (!order) {
       return res.status(404).json({ message: "No orders found!" });
@@ -121,6 +141,9 @@ export const getOrderByUserId = async (req: CustomRequest, res: Response) => {
     return res.status(200).json({
       message: "Order fetched successfully",
       data: order,
+      totalOrders,
+      totalPages: Math.ceil(totalOrders / limit),
+      currentPage: page,
     });
   } catch (error: any) {
     internalError("Error in getOrderByUserId controller", error, res);

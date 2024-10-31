@@ -157,7 +157,6 @@ export const getAnalytics = async (req: Request, res: Response) => {
     const availableArtworkChangePercent =
       await calculateMonthlyAvailableArtworksChange();
 
-    console.log(revenueChangePercent);
     res.status(200).json({
       message: "Analytics fetched",
       data: {
