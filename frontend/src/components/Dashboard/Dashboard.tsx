@@ -4,12 +4,12 @@ import React from "react";
 import {
   Card,
   CardContent,
-  CardDescription,
+  // CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DollarSign, Package, ShoppingCart, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -29,9 +29,9 @@ export function Dashboard() {
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            {/* <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            <TabsTrigger value="notifications">Notifications</TabsTrigger> */}
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -46,9 +46,13 @@ export function Dashboard() {
                   <div className="text-2xl font-bold">
                     Rs.&nbsp;{analytics ? analytics.totalRevenue : 0}
                   </div>
-                  {/* <p className="text-xs text-muted-foreground">
-                    +20.1% from last month
-                  </p> */}
+                  <p className="text-xs text-muted-foreground">
+                    {`${
+                      analytics && analytics?.revenueChangePercent > 0
+                        ? `+${analytics.revenueChangePercent}`
+                        : `${analytics?.revenueChangePercent}`
+                    }% from last month`}
+                  </p>
                 </CardContent>
               </Card>
               <Card
@@ -64,7 +68,11 @@ export function Dashboard() {
                 <CardContent>
                   <div className="text-2xl font-bold">+{totalNewOrders}</div>
                   <p className="text-xs text-muted-foreground">
-                    +15% from last week
+                    {`${
+                      analytics && analytics?.orderChangePercent > 0
+                        ? `+${analytics.orderChangePercent}`
+                        : `${analytics?.orderChangePercent}`
+                    }% from last week`}
                   </p>
                 </CardContent>
               </Card>
@@ -80,7 +88,11 @@ export function Dashboard() {
                     +{analytics ? analytics.newCustomers : 0}
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    +8% from last month
+                    {`${
+                      analytics && analytics?.customerChangePercent > 0
+                        ? `+${analytics.customerChangePercent}`
+                        : `${analytics?.customerChangePercent}`
+                    }% from last month`}
                   </p>
                 </CardContent>
               </Card>
@@ -95,13 +107,17 @@ export function Dashboard() {
                   <div className="text-2xl font-bold">
                     {analytics ? analytics.totalAvailableArtworks : 0}
                   </div>
-                  {/* <p className="text-xs text-muted-foreground">
-                    +3% from last month
-                  </p> */}
+                  <p className="text-xs text-muted-foreground">
+                    {`${
+                      analytics && analytics?.availableArtworkChangePercent > 0
+                        ? `+${analytics.availableArtworkChangePercent}`
+                        : `${analytics?.availableArtworkChangePercent}`
+                    }% from last month`}
+                  </p>
                 </CardContent>
               </Card>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4">
                 <CardHeader>
                   <CardTitle>Recent Orders</CardTitle>
@@ -110,17 +126,9 @@ export function Dashboard() {
                   <p>Recent orders will be displayed here.</p>
                 </CardContent>
               </Card>
-              {/* <Card className="col-span-3">
-              <CardHeader>
-                <CardTitle>Top Selling Products</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>Top selling products will be displayed here.</p>
-              </CardContent>
-            </Card> */}
-            </div>
+            </div> */}
           </TabsContent>
-          <TabsContent value="analytics" className="space-y-4">
+          {/* <TabsContent value="analytics" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>Sales Analytics</CardTitle>
@@ -132,8 +140,8 @@ export function Dashboard() {
                 <p>Sales analytics charts and graphs will be displayed here.</p>
               </CardContent>
             </Card>
-          </TabsContent>
-          <TabsContent value="reports" className="space-y-4">
+          </TabsContent> */}
+          {/* <TabsContent value="reports" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>Generate Reports</CardTitle>
@@ -159,8 +167,8 @@ export function Dashboard() {
                 </form>
               </CardContent>
             </Card>
-          </TabsContent>
-          <TabsContent value="notifications" className="space-y-4">
+          </TabsContent> */}
+          {/* <TabsContent value="notifications" className="space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle>Notifications</CardTitle>
@@ -172,7 +180,7 @@ export function Dashboard() {
                 <p>Recent notifications and settings will be displayed here.</p>
               </CardContent>
             </Card>
-          </TabsContent>
+          </TabsContent> */}
         </Tabs>
       </main>
     </>
