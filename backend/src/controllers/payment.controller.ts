@@ -6,6 +6,8 @@ import Cart from "../models/cart.model";
 
 import { internalError } from "./controllerError";
 import PaymentDetails from "../models/payment.model";
+import PaymentDetail from "../models/payment.model";
+import Artwork from "../models/artwork.model";
 
 export const initiateKhaltiPayment = async (req: Request, res: Response) => {
   try {
@@ -187,5 +189,55 @@ export const getPaymentDetails = async (req: Request, res: Response) => {
     return res.status(400).json({ message: "Couldn't fetch payment details." });
   } catch (error) {
     internalError("Error in getPaymentDetails controller", error, res);
+  }
+};
+
+export const updatePaymentStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId, status } = req.params;
+    if (!orderId) {
+      return res.status(400).json({ message: "Order ID is required" });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      orderId,
+      { $set: { "paymentDetails.status": status } },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Invalid order ID." });
+    }
+
+    const { pidx } = updatedOrder.paymentDetails;
+    const { totalPrice } = updatedOrder;
+    const newPaymentDetails = {
+      pidx,
+      total_amount: totalPrice,
+      status,
+      transaction_id: crypto.randomUUID(),
+      refunded: false,
+      orderId: updatedOrder._id,
+    };
+
+    await PaymentDetail.findOneAndUpdate(
+      { pidx },
+      newPaymentDetails,
+      { new: true, upsert: true } // `upsert` option creates if not found
+    );
+
+    const updatedArtwork = await Artwork.updateMany(
+      {
+        _id: { $in: updatedOrder.artworks },
+      },
+      { $set: { availability: false } }
+    );
+
+    return res.status(200).json({
+      message: "Payment status updated",
+      data: updatedOrder,
+    });
+  } catch (error: any) {
+    internalError("Error in updatePaymentStatus controller", error, res);
   }
 };

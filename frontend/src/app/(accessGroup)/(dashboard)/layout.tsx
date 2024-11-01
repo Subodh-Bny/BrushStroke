@@ -78,7 +78,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           <Button
             variant="ghost"
             className="w-full justify-start"
-            onClick={() => router.push(routes.admin.dashboard)}
+            onClick={() => router.push(routes.admin.users)}
           >
             <Users className="h-4 w-4" />
             {isSidebarOpen && <span className="ml-2">Users</span>}

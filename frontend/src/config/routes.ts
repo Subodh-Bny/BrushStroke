@@ -10,6 +10,7 @@ const routes = {
     artworks: { add: "/admin/artwork/add", view: "/admin/artwork/" },
     orders: "/admin/orders",
     categories: "/admin/category",
+    users: "/admin/users",
   },
 
   khaltiReturn: "/payment/",

@@ -66,12 +66,14 @@ interface PaymentDetails {
   refunded: boolean;
   orderId?: string;
 }
+
+type OrderStatus = "Delivered" | "Pending" | "Shipped";
 interface Order {
   _id?: string;
   cartId?: string;
-  artworks: string[];
+  artworks: string[] | Artwork[];
   user?: User;
-  status?: string;
+  status?: OrderStatus;
   totalPrice: number;
   shippingAddress: string;
   phoneNumber: string;

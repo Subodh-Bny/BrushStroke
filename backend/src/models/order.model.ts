@@ -54,7 +54,6 @@ const OrderSchema: Schema = new Schema(
       },
       status: {
         type: String,
-
         default: "Pending",
       },
       transaction_id: {

@@ -5,7 +5,7 @@ const endPoints = {
   logout: "/auth/logout",
 
   //user
-  getArtists: "/user/artists",
+  users: "/user/",
 
   //category
   getAllCategories: "/category",
@@ -24,6 +24,7 @@ const endPoints = {
   //order
   order: "/order/",
   getOrderByUserId: "/order/user/",
+  updateOrderShippingStatus: "/order/shipping/status/",
 
   //khalti
   khaltiInitiate: "/payment/initiateKhalti",
@@ -34,6 +35,7 @@ const endPoints = {
 
   //payment details
   getPaymentDetails: "/payment/details",
+  updatePaymentStatus: "/payment/status/",
 
   //analytics
   analytics: "/analytics/",

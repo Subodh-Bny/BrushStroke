@@ -186,7 +186,29 @@ export const deleteOrder = async (req: Request, res: Response) => {
 
     return res.status(200).json({
       message: "Order deleted successfully",
+      data: deletedOrder,
     });
+  } catch (error: any) {
+    internalError("Error in deleteOrder controller", error, res);
+  }
+};
+
+export const updateShippingStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId, status } = req.params;
+    if (!orderId) {
+      return res.status(400).json({ message: "Order id is required" });
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(orderId, {
+      $set: { status: status },
+    });
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Invalid order id." });
+    }
+    return res
+      .status(200)
+      .json({ message: "Order status updated", data: updateOrder });
   } catch (error: any) {
     internalError("Error in deleteOrder controller", error, res);
   }

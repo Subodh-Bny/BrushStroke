@@ -22,7 +22,7 @@ import {
 import { useGetOrderByUserId } from "@/services/api/orderApi";
 import Cookies from "js-cookie";
 import Container from "@/components/Container";
-import OrdersTable from "@/components/OrdersTable";
+import OrdersTable from "@/components/Dashboard/Order/OrdersTable";
 
 const OrderPage = () => {
   const userCookie = Cookies.get("user");

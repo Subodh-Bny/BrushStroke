@@ -32,8 +32,7 @@ const calculateRevenueChange = async () => {
 
   const currentRevenue = currentMonthRevenue[0]?.total_amount || 0;
   const previousRevenue = previousMonthRevenue[0]?.total_amount || 0;
-  console.log(previousRevenue);
-  console.log(currentRevenue);
+
   const revenueChangePercentage =
     previousRevenue === 0
       ? currentRevenue > 0
@@ -88,14 +87,16 @@ const calculateMonthlyCustomerChange = async () => {
     role: { $in: ["CUSTOMER", "ARTIST"] },
   });
 
-  const customerChangePercentage =
-    previousMonthCustomers === 0
-      ? currentMonthCustomers > 0
-        ? 100
-        : -100
-      : ((currentMonthCustomers - previousMonthCustomers) /
-          previousMonthCustomers) *
-        100;
+  let customerChangePercentage;
+
+  if (previousMonthCustomers === 0) {
+    customerChangePercentage = currentMonthCustomers > 0 ? 100 : 0;
+  } else {
+    customerChangePercentage =
+      ((currentMonthCustomers - previousMonthCustomers) /
+        previousMonthCustomers) *
+      100;
+  }
 
   return customerChangePercentage.toFixed(2);
 };
@@ -115,7 +116,7 @@ const calculateMonthlyAvailableArtworksChange = async () => {
     previousMonthAvailableArtworks === 0
       ? currentMonthAvailableArtworks > 0
         ? 100
-        : -100
+        : 0
       : ((currentMonthAvailableArtworks - previousMonthAvailableArtworks) /
           previousMonthAvailableArtworks) *
         100;
@@ -149,7 +150,7 @@ export const getAnalytics = async (req: Request, res: Response) => {
     });
 
     const newCustomers = await User.find({
-      createdAt: { $gte: startOfWeek, $lte: new Date() },
+      createdAt: { $gte: currentMonthStart, $lte: currentMonthEnd },
     }).select("-password");
 
     const revenueChangePercent = await calculateRevenueChange();

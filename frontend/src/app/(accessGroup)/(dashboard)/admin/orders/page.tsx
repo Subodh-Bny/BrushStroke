@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -9,11 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Search } from "lucide-react";
+
 import { useGetOrders } from "@/services/api/orderApi";
-import OrdersTable from "@/components/OrdersTable";
+import OrdersTable from "@/components/Dashboard/Order/OrdersTable";
 
 const OrderPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,7 +49,7 @@ const OrderPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-between items-center mb-4">
+          {/* <div className="flex justify-between items-center mb-4">
             <div className="flex items-center space-x-2">
               <Label htmlFor="search" className="sr-only">
                 Search orders
@@ -69,7 +66,7 @@ const OrderPage = () => {
               </Button>
             </div>
             <Button>Add New Order</Button>
-          </div>
+          </div> */}
           <OrdersTable
             adminPage={true}
             orderData={orderData}

@@ -16,7 +16,7 @@ export const useCreateOrderKhalti = () => {
   const { mutate: khaltiInitiate } = useKhaltiInitiate();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["order"],
+    mutationKey: ["orders"],
     mutationFn: async (data: Order) => {
       try {
         const response: AxiosResponse<QueryResponse<OrderData>> =
@@ -51,7 +51,7 @@ export const useCreateOrderKhalti = () => {
 
 export const useCreateOrderEsewa = () => {
   return useMutation<Order | undefined, AxiosError<ApiResponse>, Order>({
-    mutationKey: ["order"],
+    mutationKey: ["orders"],
     mutationFn: async (data: Order): Promise<Order | undefined> => {
       try {
         const response: AxiosResponse<QueryResponse<OrderData>> =
@@ -74,7 +74,7 @@ export const useGetOrderByUserId = ({
   page?: number;
 }) => {
   return useQuery<OrderWithPaginationResponse<Order[]>, AxiosError>({
-    queryKey: ["userOrders", userId, page],
+    queryKey: ["orders", userId, page],
     queryFn: async () => {
       try {
         const response: AxiosResponse<OrderWithPaginationResponse<Order[]>> =
@@ -86,6 +86,27 @@ export const useGetOrderByUserId = ({
       } catch (error) {
         requestError(error as AxiosError<ApiResponse, unknown>);
         throw error;
+      }
+    },
+  });
+};
+
+export const useGetOrderById = ({
+  orderId,
+}: {
+  orderId: string;
+  page?: number;
+}) => {
+  return useQuery({
+    queryKey: ["orders", orderId],
+    queryFn: async () => {
+      try {
+        const response: AxiosResponse<QueryResponse<Order>> =
+          await axiosInstance.get<ApiResponse>(`${endPoints.order}${orderId}`);
+
+        return response.data.data;
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse, unknown>);
       }
     },
   });
@@ -105,6 +126,44 @@ export const useGetOrders = (page?: number) => {
       } catch (error) {
         requestError(error as AxiosError<ApiResponse, unknown>);
         throw error;
+      }
+    },
+  });
+};
+
+export const useUpdateShippingStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["orders"],
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      try {
+        const response: AxiosResponse<QueryResponse<Order>> =
+          await axiosInstance.put<ApiResponse>(
+            `${endPoints.updateOrderShippingStatus}${id}/${status}`
+          );
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+        return response.data?.data;
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse, unknown>);
+      }
+    },
+  });
+};
+
+export const useDeleteOrder = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["orders"],
+    mutationFn: async ({ orderId }: { orderId: string }) => {
+      try {
+        const response: AxiosResponse<QueryResponse<Order>> =
+          await axiosInstance.delete<ApiResponse>(
+            `${endPoints.order}${orderId}`
+          );
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+        return response.data?.data;
+      } catch (error) {
+        requestError(error as AxiosError<ApiResponse, unknown>);
       }
     },
   });
