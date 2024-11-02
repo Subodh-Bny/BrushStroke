@@ -12,6 +12,7 @@ const routes = {
     categories: "/admin/category",
     users: "/admin/users",
   },
+  manageProfile: "/manageProfile",
 
   khaltiReturn: "/payment/",
 };

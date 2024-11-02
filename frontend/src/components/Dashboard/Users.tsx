@@ -18,6 +18,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -27,17 +39,22 @@ import {
 import { Label } from "@/components/ui/label";
 import { useForm, SubmitHandler } from "react-hook-form";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useAddUser, useGetUsers, useUpdateUser } from "@/services/api/userApi";
+import {
+  useAddUser,
+  useDeleteUser,
+  useGetUsers,
+  useUpdateUser,
+} from "@/services/api/userApi";
 import { useState } from "react";
 
 const UserManagement = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data: userData } = useGetUsers();
+  const { mutate: deleteUserMutate } = useDeleteUser();
 
   const handleDeleteUser = (id: string) => {
-    setUsers(users.filter((user) => user._id || "" !== id));
+    deleteUserMutate(id);
   };
 
   const closeDialog = () => setIsDialogOpen(false);
@@ -93,13 +110,31 @@ const UserManagement = () => {
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleDeleteUser(user._id || "")}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger>
+                    <Trash2 className="h-4 w-4" />
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete the account and remove the data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => handleDeleteUser(user._id || "")}
+                        className="bg-red-500"
+                      >
+                        Continue
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </TableCell>
             </TableRow>
           ))}
@@ -147,6 +182,7 @@ function UserForm({ user, closeDialog }: UserFormProps) {
     } else {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { _id, ...dataWithoutId } = data;
+      // console.log(data);
       updateMutate({ _id: user._id || "", ...dataWithoutId });
     }
   };

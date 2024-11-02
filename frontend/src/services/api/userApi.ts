@@ -36,17 +36,24 @@ export const useGetUsers = () => {
 };
 
 interface UpdateUser extends SignupUser {
-  _id: string;
+  _id?: string;
 }
-export const useUpdateUser = ({ onSuccess }: { onSuccess: () => void }) => {
+export const useUpdateUser = ({
+  onSuccess,
+}: { onSuccess?: () => void } = {}) => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["user"],
+    mutationKey: ["users"],
     mutationFn: async (data: UpdateUser) => {
       try {
         const response: AxiosResponse<QueryResponse> =
-          await axiosInstance.put<ApiResponse>(endPoints.users + data._id);
+          await axiosInstance.put<ApiResponse>(
+            endPoints.users + data._id,
+            data
+          );
         toast.success(response.data.message);
-        onSuccess();
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        onSuccess && onSuccess();
       } catch (error: unknown) {
         requestError(error as AxiosError<ApiResponse, unknown>);
       }
@@ -63,7 +70,7 @@ export const useAddUser = ({
 }) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationKey: ["user"],
+    mutationKey: ["users"],
     mutationFn: async (data: SignupUser) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -73,6 +80,23 @@ export const useAddUser = ({
         onSuccess();
         queryClient.invalidateQueries({ queryKey: ["users"] });
         reset();
+      } catch (error: unknown) {
+        requestError(error as AxiosError<ApiResponse, unknown>);
+      }
+    },
+  });
+};
+
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["users"],
+    mutationFn: async (userId: string) => {
+      try {
+        const response: AxiosResponse<QueryResponse> =
+          await axiosInstance.delete<ApiResponse>(endPoints.users + userId);
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        toast.success(response.data.message);
       } catch (error: unknown) {
         requestError(error as AxiosError<ApiResponse, unknown>);
       }

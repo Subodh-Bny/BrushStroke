@@ -1,17 +1,16 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
-import User from "../models/user.model";
+import User, { IUser } from "../models/user.model";
 import { internalError } from "./controllerError";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await User.find().select("-password");
     if (users) {
-      const filteredUsers = users.filter((user) => user.role !== "ADMIN");
       return res
         .status(200)
-        .json({ message: "Users fetched successfully", data: filteredUsers });
+        .json({ message: "Users fetched successfully", data: users });
     }
     return res.status(400).json({ message: "Coundnot fetch users" });
   } catch (error: any) {
@@ -59,6 +58,7 @@ export const updateUser = async (req: Request, res: Response) => {
       updateFields.password = await bcryptjs.hash(password, salt);
     }
 
+    console.log(updateFields);
     const user = await User.findByIdAndUpdate(userId, updateFields, {
       new: true,
     });
@@ -79,6 +79,19 @@ export const updateUser = async (req: Request, res: Response) => {
         profilePic: user.profilePic,
       },
     });
+  } catch (error: any) {
+    internalError("Error in updateUser controller", error, res);
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (deletedUser) {
+      return res.status(200).json({ message: "User deleted successfully." });
+    }
+    return res.status(404).json({ message: "User not found!" });
   } catch (error: any) {
     internalError("Error in updateUser controller", error, res);
   }

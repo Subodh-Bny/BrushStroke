@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { User, Settings, LogOut, LayoutDashboard } from "lucide-react";
+import { User, LogOut, LayoutDashboard } from "lucide-react";
 import { AuthContext } from "@/context/AuthContext";
 import routes from "@/config/routes";
 import { useRouter } from "next/navigation";
@@ -58,29 +58,27 @@ const UserNav = ({
           side="bottom"
         >
           <DropdownMenuLabel className="font-semibold text-foreground">
-            My Account
+            {user?.username}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {(userType === "ARTIST" || userType === "ADMIN") && (
+          {userType === "ADMIN" && (
             <DropdownMenuItem
               className="hover:cursor-pointer"
               onClick={() => router.push(routes.admin.dashboard)}
             >
               <LayoutDashboard className="mr-2 h-4 w-4" />
 
-              {userType === "ARTIST"
-                ? "Artist Panel"
-                : userType === "ADMIN" && <span>Admin Panel</span>}
+              <span>Admin Panel</span>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer">
+          <DropdownMenuItem
+            onClick={() => router.push(routes.manageProfile)}
+            className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer"
+          >
             <User className="mr-2 h-4 w-4" />
             <span>Manage Profile</span>
           </DropdownMenuItem>
-          <DropdownMenuItem className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
-          </DropdownMenuItem>
+
           <DropdownMenuItem
             className="focus:bg-accent focus:text-accent-foreground hover:cursor-pointer"
             onClick={() => router.push(routes.orders)}
