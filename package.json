@@ -4,7 +4,7 @@
   "main": "backend/src/index.ts",
   "scripts": {
     "build": "npx tsc",
-    "start": "node backend/dist/index.js",
+    "start": "node build/index.js",
     "dev": "nodemon backend/src/index.ts"
   },
   "keywords": [],
