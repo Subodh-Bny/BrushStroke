@@ -19,10 +19,12 @@ dotenv.config();
 const app: Express = express();
 
 const port = process.env.PORT || 5000;
+
+const backendProduction = process.env.BACKEND_URL || "";
 //, "https://test-pay.khalti.com"
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", backendProduction],
     credentials: true,
   })
 );
