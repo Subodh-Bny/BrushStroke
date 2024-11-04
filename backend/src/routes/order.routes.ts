@@ -9,11 +9,12 @@ import {
   updateShippingStatus,
 } from "../controllers/order.controller";
 import protectRoute from "../middleware/protectRoute";
+import adminRoute from "../middleware/adminRoute";
 
 const router = express.Router();
 
 router.post("/", protectRoute, createOrder);
-router.get("/", protectRoute, getAllOrders);
+router.get("/", adminRoute, getAllOrders);
 router.get("/:id", protectRoute, getOrderById);
 router.get("/user/:userId", protectRoute, getOrderByUserId);
 router.put("/:id", protectRoute, updateOrder);

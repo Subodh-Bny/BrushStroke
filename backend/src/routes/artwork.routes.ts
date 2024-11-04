@@ -9,19 +9,19 @@ import {
   setFeaturedArtwork,
   updateArtwork,
 } from "../controllers/artwork.controller";
-import protectRoute from "../middleware/protectRoute";
+import adminRoute from "../middleware/adminRoute";
 
 const router = Router();
 
-router.post("/", protectRoute, createArtwork);
+router.post("/", adminRoute, createArtwork);
 router.get("/", getAllArtworks);
 router.get("/:id", getArtworkById);
-router.put("/:id", protectRoute, updateArtwork);
-router.delete("/:id", protectRoute, deleteArtwork);
+router.put("/:id", adminRoute, updateArtwork);
+router.delete("/:id", adminRoute, deleteArtwork);
 router.get("/category/:categoryId", getArtworksByCategory);
 router.patch(
   "/featured/:artworkId/toggle-featured",
-  protectRoute,
+  adminRoute,
   setFeaturedArtwork
 );
 router.get("/featured/get", getFeaturedArtwork);

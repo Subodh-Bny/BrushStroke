@@ -116,7 +116,7 @@ export default function HeroArtworkCarousel() {
                     <div className="relative h-[600px] md:h-screen">
                       <Image
                         src={artwork.image || "noImage.jpg"}
-                        alt={`Artwork: ${artwork.title} by ${artwork.artist}`}
+                        alt={`Artwork ${artwork.title}`}
                         fill
                         sizes="100vw"
                         className="object-cover"
@@ -130,7 +130,7 @@ export default function HeroArtworkCarousel() {
                   <div className="relative h-[600px] md:h-screen">
                     <Image
                       src={artwork.image || "noImage.jpg"}
-                      alt={`Artwork: ${artwork.title} by ${artwork.artist}`}
+                      alt={`Artwork ${artwork.title}`}
                       fill
                       sizes="100vw"
                       className="object-cover"

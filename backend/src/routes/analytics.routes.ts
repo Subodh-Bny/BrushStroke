@@ -1,9 +1,9 @@
 import { Router } from "express";
-import protectRoute from "../middleware/protectRoute";
 import { getAnalytics } from "../controllers/analytics.controller";
+import adminRoute from "../middleware/adminRoute";
 
 const router = Router();
 
-router.get("/", protectRoute, getAnalytics);
+router.get("/", adminRoute, getAnalytics);
 
 export default router;
