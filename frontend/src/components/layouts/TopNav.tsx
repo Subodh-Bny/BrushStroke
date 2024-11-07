@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
-import NavLinks from "./NavLinks";
+// import NavLinks from "./NavLinks";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ShoppingCart } from "lucide-react";
@@ -72,7 +72,7 @@ const TopNav = () => {
           </span>
           <span className="text-red-500">.</span>
         </Link>
-        <NavLinks isScrolled={isScrolled} pathname={pathname} />
+        {/* <NavLinks isScrolled={isScrolled} pathname={pathname} /> */}
         <div className="flex gap-2 items-center justify-center">
           <div className="relative">
             {isLoggedIn &&
